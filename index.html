@@ -10,9 +10,8 @@
     <style>
         :root {
             --gold: #c5a059;
-            --gold-dim: #8e6d31;
             --dark-bg: #0a0a0a;
-            --paper-bg: #161616;
+            --paper-bg: #fdfbf7;
         }
         body {
             font-family: 'Noto Sans SC', sans-serif;
@@ -63,102 +62,24 @@
             background: linear-gradient(135deg, #c5a059 0%, #8e6d31 100%);
             color: white;
         }
-
-        /* * =========================================
-         * 重新设计的订单小票样式
-         * =========================================
-         */
-        #receipt-source {
-            position: fixed;
-            left: -9999px; /* 移出屏幕 */
-            top: 0;
-            width: 480px; /* 稍微加宽以容纳更多细节 */
-            background-color: #121212;
-            color: #e5e5e5;
-            padding: 0; /* 使用内部容器控制内边距 */
-            box-sizing: border-box;
-            font-family: 'Noto Serif SC', serif; /* 整体使用衬线体更有质感 */
-        }
         
-        .receipt-container {
-            border: 1px solid #333;
-            margin: 20px;
-            padding: 40px;
-            background-image: radial-gradient(circle at top right, rgba(197, 160, 89, 0.05), transparent 40%);
-            position: relative;
-            overflow: hidden;
+        /* 票据样式 - 拟真纸张效果 */
+        #receipt-card {
+            background-color: var(--paper-bg);
+            background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d4d4d4' fill-opacity='0.2' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+            color: #2c2c2c;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
-
-        /* 金色双线边框装饰 */
-        .receipt-border {
-            position: absolute;
-            top: 10px; right: 10px; bottom: 10px; left: 10px;
-            border: 1px solid #c5a059;
-            pointer-events: none;
+        .receipt-line {
+            border-bottom: 1px dashed #a8a29e;
         }
-        .receipt-border::after {
-            content: '';
-            position: absolute;
-            top: 4px; right: 4px; bottom: 4px; left: 4px;
-            border: 1px solid rgba(197, 160, 89, 0.3);
-        }
-
-        .receipt-divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, #c5a059, transparent);
-            margin: 20px 0;
-            opacity: 0.5;
-        }
-
-        .receipt-item-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 12px;
-            position: relative;
-        }
-        
-        /* 点线连接效果 */
-        .receipt-item-row::after {
-            content: '';
-            position: absolute;
-            bottom: 4px;
-            left: 0;
-            width: 100%;
-            border-bottom: 1px dotted #333;
-            z-index: 0;
-        }
-        
-        .receipt-name {
-            background: #121212;
-            padding-right: 8px;
-            z-index: 1;
-            position: relative;
-            max-width: 65%;
-            font-weight: bold;
-            color: #d4d4d8;
-        }
-        
-        .receipt-price {
-            background: #121212;
-            padding-left: 8px;
-            z-index: 1;
-            position: relative;
+        .stamp {
+            border: 3px solid #c5a059;
             color: #c5a059;
-            font-family: 'Noto Sans SC', sans-serif; /* 数字用无衬线体更清晰 */
+            transform: rotate(-15deg);
+            mask-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="); /* 简单的遮罩模拟印章纹理，实际使用可忽略 */
+            opacity: 0.8;
         }
-
-        .receipt-sub {
-            font-size: 10px;
-            color: #666;
-            margin-top: -8px;
-            background: #121212;
-            width: fit-content;
-            z-index: 2;
-            position: relative;
-            padding-right: 10px;
-        }
-
     </style>
 </head>
 <body class="selection:bg-[#c5a059]/30">
@@ -229,6 +150,7 @@
         </main>
     </div>
 
+    <!-- 购物车侧边栏 -->
     <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/70 z-50 hidden backdrop-blur-md"></div>
     <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-full max-w-md bg-[#0f0f0f] z-50 shadow-2xl translate-x-full cart-drawer flex flex-col border-l border-zinc-800">
         <div class="p-8 border-b border-zinc-800 flex justify-between items-center">
@@ -238,89 +160,123 @@
         <div id="cart-items" class="flex-grow overflow-y-auto p-8 space-y-6 font-sans text-xs"></div>
         <div class="p-8 border-t border-zinc-800 bg-black/30">
             <div class="flex justify-between items-end mb-6"><span class="text-zinc-500 text-sm tracking-widest uppercase">总计费用</span><span id="cart-total" class="text-3xl font-bold text-[#c5a059]">¥ 0</span></div>
-            <button onclick="placeOrder()" class="w-full btn-gold text-white py-5 font-bold tracking-[0.3em] uppercase transition-all shadow-2xl hover:brightness-110">生成专属菜单 (保存为图片)</button>
+            <!-- 修改：点击按钮触发预览弹窗 -->
+            <button onclick="openOrderModal()" class="w-full btn-gold text-white py-5 font-bold tracking-[0.3em] uppercase transition-all shadow-2xl">预览并生成菜单</button>
         </div>
     </div>
 
-    <!-- 重新设计的隐藏收据模板 -->
-    <div id="receipt-source">
-        <div class="receipt-container">
-            <!-- 装饰边框 -->
-            <div class="receipt-border"></div>
-
-            <!-- 头部 -->
-            <div class="text-center mb-8 pt-4">
-                <div class="w-8 h-8 border border-[#c5a059] flex items-center justify-center mx-auto mb-3">
-                    <span class="text-[#c5a059] font-bold text-sm">稻</span>
+    <!-- 订单确认与预览模态框 (新功能) -->
+    <div id="order-modal" class="fixed inset-0 z-[60] hidden">
+        <!-- 背景遮罩 -->
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="order-modal-bg" onclick="closeOrderModal()"></div>
+        
+        <!-- 模态框主体 -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[90vh] md:h-auto flex flex-col md:flex-row gap-0 md:gap-8 p-4 pointer-events-none opacity-0 scale-95 transition-all duration-300" id="order-modal-content">
+            
+            <!-- 左侧：输入控制区 -->
+            <div class="bg-[#18181b] border border-zinc-800 rounded-xl p-6 md:p-8 flex-1 pointer-events-auto shadow-2xl flex flex-col">
+                <div class="mb-6">
+                    <h3 class="text-xl text-[#c5a059] font-serif font-bold mb-2">订单确认</h3>
+                    <p class="text-zinc-500 text-xs">请完善信息以生成您的专属菜单</p>
                 </div>
-                <h2 class="text-2xl font-bold tracking-[0.4em] text-[#c5a059] ml-2">稻田边·私宴</h2>
-                <p class="text-[8px] uppercase tracking-[0.4em] text-zinc-500 mt-2">Private Dining Reservation</p>
-            </div>
-
-            <!-- 信息区 -->
-            <div class="flex justify-between items-end mb-8 px-2">
-                <div class="text-left">
-                    <p class="text-[8px] text-zinc-600 uppercase tracking-wider mb-1">Date / 日期</p>
-                    <p id="receipt-date" class="text-sm font-medium text-zinc-300"></p>
+                
+                <div class="space-y-4 mb-8">
+                    <div>
+                        <label class="block text-zinc-400 text-xs uppercase tracking-wider mb-2">桌号 / 称呼</label>
+                        <input type="text" id="input-table" placeholder="例如：8号桌 或 李先生" 
+                            class="w-full bg-black/50 border border-zinc-700 rounded p-3 text-white focus:border-[#c5a059] focus:outline-none transition-colors text-sm"
+                            oninput="updateReceiptInfo()">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-400 text-xs uppercase tracking-wider mb-2">备注要求</label>
+                        <textarea id="input-note" rows="3" placeholder="例如：微辣、免葱姜、需要宝宝椅..." 
+                            class="w-full bg-black/50 border border-zinc-700 rounded p-3 text-white focus:border-[#c5a059] focus:outline-none transition-colors text-sm resize-none"
+                            oninput="updateReceiptInfo()"></textarea>
+                    </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-[8px] text-zinc-600 uppercase tracking-wider mb-1">Serial No. / 编号</p>
-                    <p id="receipt-id" class="text-sm font-medium text-[#c5a059] font-sans"></p>
-                </div>
-            </div>
 
-            <div class="receipt-divider"></div>
-
-            <!-- 菜品列表 -->
-            <div class="px-2 mb-8">
-                <div class="flex justify-between text-[9px] text-zinc-600 uppercase tracking-widest mb-4">
-                    <span>Item Details</span>
-                    <span>Amount</span>
-                </div>
-                <div id="receipt-items-list" class="space-y-1">
-                    <!-- JS动态插入内容 -->
-                </div>
-            </div>
-
-            <div class="receipt-divider"></div>
-
-            <!-- 底部合计 -->
-            <div class="flex justify-between items-center px-2 pt-2 mb-12">
-                <div>
-                    <span class="text-xs uppercase tracking-widest text-zinc-500">Total Estimate</span>
-                    <div class="text-[9px] text-zinc-700">不含服务费</div>
-                </div>
-                <div class="text-right">
-                    <span id="receipt-total" class="text-3xl font-bold text-[#c5a059] font-sans"></span>
+                <div class="mt-auto space-y-3">
+                    <button onclick="confirmDownload()" class="w-full btn-gold text-white py-4 font-bold tracking-widest uppercase rounded shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        保存电子菜单
+                    </button>
+                    <button onclick="closeOrderModal()" class="w-full bg-transparent border border-zinc-700 text-zinc-400 py-3 text-xs tracking-widest uppercase rounded hover:border-zinc-500 hover:text-zinc-200 transition-all">
+                        返回修改
+                    </button>
                 </div>
             </div>
 
-            <!-- 底部签名/标语 -->
-            <div class="text-center pb-4">
-                <p class="text-[10px] text-zinc-600 italic font-serif">" 不时不食 · 寻味稻边 "</p>
-                <div class="mt-3 flex justify-center gap-2">
-                    <div class="w-1 h-1 rounded-full bg-[#c5a059] opacity-50"></div>
-                    <div class="w-1 h-1 rounded-full bg-[#c5a059] opacity-50"></div>
-                    <div class="w-1 h-1 rounded-full bg-[#c5a059] opacity-50"></div>
+            <!-- 右侧：实时预览区 (将被截图的区域) -->
+            <div class="flex-1 flex items-center justify-center bg-[#0a0a0a]/50 rounded-xl border border-zinc-800/50 p-4 md:p-8 overflow-y-auto pointer-events-auto">
+                <!-- 实际的小票卡片 -->
+                <div id="receipt-card" class="w-full max-w-[380px] p-8 relative mx-auto font-sans text-black">
+                    <!-- 顶部 -->
+                    <div class="text-center mb-6 border-b-2 border-black pb-4">
+                        <div class="w-12 h-12 border-2 border-black mx-auto flex items-center justify-center mb-3">
+                            <span class="font-serif font-bold text-xl">稻</span>
+                        </div>
+                        <h2 class="text-2xl font-serif font-bold tracking-widest mb-1">预定单</h2>
+                        <p class="text-[9px] uppercase tracking-[0.2em] opacity-60">Reservation Menu</p>
+                    </div>
+                    
+                    <!-- 信息栏 -->
+                    <div class="text-[10px] mb-6 space-y-1.5 font-mono text-zinc-600">
+                        <div class="flex justify-between"><span>日期 DATE:</span><span id="receipt-date" class="font-bold text-black"></span></div>
+                        <div class="flex justify-between"><span>单号 NO.:</span><span id="receipt-id" class="font-bold text-black"></span></div>
+                        <div class="flex justify-between"><span>桌号 TABLE:</span><span id="receipt-table" class="font-bold text-black border-b border-dashed border-black px-1 min-w-[20px] text-right">--</span></div>
+                    </div>
+
+                    <!-- 菜品列表 -->
+                    <div class="receipt-line mb-4"></div>
+                    <div class="flex text-[10px] font-bold mb-2 uppercase tracking-wider text-zinc-500">
+                        <span class="w-8">Qty</span>
+                        <span class="flex-grow">Item</span>
+                        <span class="text-right">Amt</span>
+                    </div>
+                    <div id="receipt-items-list" class="space-y-2 mb-6 text-xs min-h-[100px]">
+                        <!-- JS 填充 -->
+                    </div>
+                    <div class="receipt-line mb-4"></div>
+
+                    <!-- 合计 -->
+                    <div class="flex justify-between items-baseline mb-6">
+                        <span class="text-sm font-bold uppercase">Total Amount</span>
+                        <span id="receipt-total" class="text-2xl font-serif font-bold"></span>
+                    </div>
+
+                    <!-- 备注区域 -->
+                    <div id="receipt-note-container" class="mb-8 hidden">
+                        <p class="text-[9px] font-bold uppercase mb-1 text-zinc-500">Remarks:</p>
+                        <p id="receipt-note" class="text-xs font-mono bg-zinc-100 p-2 break-words border-l-2 border-[#c5a059]"></p>
+                    </div>
+
+                    <!-- 底部 -->
+                    <div class="text-center space-y-2">
+                        <div class="inline-block border border-black px-4 py-1 text-[10px] tracking-widest uppercase font-bold">Thank You</div>
+                        <p class="text-[9px] text-zinc-500 italic font-serif">稻田边·私宴 - 不时不食</p>
+                    </div>
+
+                    <!-- 装饰性印章 -->
+                    <div class="absolute bottom-8 right-8 w-24 h-24 border-4 border-[#c5a059] rounded-full flex items-center justify-center opacity-20 pointer-events-none" style="transform: rotate(-25deg);">
+                        <span class="text-[#c5a059] font-serif font-bold text-xs tracking-widest uppercase">Confirmed</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="loading-overlay" class="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center hidden backdrop-blur-sm transition-opacity duration-300">
-        <div class="w-12 h-12 border-2 border-[#c5a059] border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="text-[#c5a059] tracking-[0.3em] text-sm uppercase font-bold">正在绘制专属菜单...</p>
-        <p class="text-zinc-600 text-xs mt-2 tracking-wider">请稍候，美好即刻呈现</p>
+    <!-- 加载与提示 -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center hidden">
+        <div class="w-12 h-12 border-2 border-[#c5a059] border-t-transparent rounded-full animate-spin mb-4"></div><p class="text-[#c5a059] tracking-[0.3em] text-sm uppercase">正在绘制菜单...</p>
     </div>
 
-    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 border border-[#c5a059] bg-black text-[#c5a059] px-8 py-3 shadow-2xl opacity-0 transition-opacity pointer-events-none z-[60] tracking-widest text-sm uppercase">已选入菜单</div>
+    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 border border-[#c5a059] bg-black text-[#c5a059] px-8 py-3 rounded-none shadow-2xl opacity-0 transition-opacity pointer-events-none z-[80] tracking-widest text-sm uppercase">已选入菜单</div>
 
     <script>
         // ==========================================
-        // 图片资源映射配置区
+        // 图片资源映射配置区 (保持原样)
         // ==========================================
         const imgMap = {
-            // --- 分类默认图 ---
             "category_凉菜": "https://images.unsplash.com/photo-1608652763176-00c82325712a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
             "category_水产": "https://images.unsplash.com/photo-1598514983157-141707355786?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
             "category_肉食": "https://images.unsplash.com/photo-1608652763176-00c82325712a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
@@ -329,64 +285,11 @@
             "category_汤类": "https://images.unsplash.com/photo-1626109450480-1890764c7520?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
             "category_点心": "https://images.unsplash.com/photo-1611308377777-080264212029?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
             "category_酒水": "https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-
-            // --- 凉菜 (ID: 101-199) ---
-            101: "https://i.ibb.co/BVmjNgvz/ae.jpg", // 奥鹅
-            102: "https://i.ibb.co/ffYwPZ9/jy.jpg", // 酱鸭
-            103: "https://i.ibb.co/jZz31rVb/bzj.jpg", // 白斩鸡
-            104: "https://i.ibb.co/0RjRgS7Z/xsy.jpg", // 香酥鸭
-            105: "https://i.ibb.co/qLLLxCTT/to.jpg", // 糖藕
-            106: "https://i.ibb.co/KcFqfMLV/ybxzy.jpg", // 油爆小杂鱼
-            107: "https://i.ibb.co/9H9rKpBH/bqdt.jpg", // 白切肚条
-            108: "https://i.ibb.co/279YpnPR/jnr.jpg", // 酱牛肉
-            109: "https://i.ibb.co/3YSSWKgw/zjz.jpg", // 糟鸡爪
-            110: "https://i.ibb.co/SwN6t73w/mltbxg.jpg", // 马兰头拌香干
-            111: "https://i.ibb.co/9HrRhY93/wss.jpg", // 莴笋丝
-            112: "https://i.ibb.co/ymHz0vRh/zmd.webp", // 糟毛豆
-            113: "https://i.ibb.co/pv7XfkQZ/pddf.jpg", // 皮蛋豆腐
-            114: "https://i.ibb.co/NgD0B5f9/bhg.jpg", // 拌黄瓜
-
-            // --- 水产 (ID: 201-299) ---
-            201: "https://i.ibb.co/ksBwkHJB/hsjy.jpg", // 甲鱼
-            202: "https://i.ibb.co/Wps1KyF8/hsmy.jpg", // 大肠烧鳗鱼
-            203: "https://i.ibb.co/bMNYfMYm/hsst.jpg", // 田鸡烧鳝筒
-            204: "https://i.ibb.co/ZphwB0Sq/xyss.jpg", // 响油鳝丝
-            205: "https://i.ibb.co/nW5bjH7/schyp.jpg", // 酸菜黑鱼片
-            206: "https://i.ibb.co/zVt0L3f1/bsy.jpg", // 白水鱼
-            207: "https://i.ibb.co/j9BzXJcW/fqlyp.jpg", // 番茄鲈鱼片
-            208: "https://i.ibb.co/jvjrdT6q/ysx.jpg", // 盐水河虾 
-            209: "https://i.ibb.co/hxKHp9Jv/ybhx.jpg", // 油爆河虾
-            210: "https://i.ibb.co/cSH667bX/mdtj.jpg", // 毛豆田鸡
-            211: "https://i.ibb.co/ynV3TMtH/hsby.png", // 鳊鱼
-            212: "https://i.ibb.co/RkLYwxtx/acydft.jpg", // 昂刺鱼豆腐汤
-            213: "https://i.ibb.co/jvvzw1LW/bcls.jpg", // 爆炒螺蛳
-            214: "https://i.ibb.co/TxGK30RY/djyt.jpg", // 剁椒鱼头
-            215: "https://i.ibb.co/QSB89XF/szx.jpg", // 梭子蟹
-            216: "https://i.ibb.co/HRK7XXj/hsacy.jpg", // 红烧昂刺鱼
-
-            // --- 肉食 (ID: 301-399) ---
-            301: "https://i.ibb.co/dNKZ3tn/hsmy.jpg", // 麻鸭猪肚
-            302: "https://i.ibb.co/yF0LxZ2s/hsek.jpg", // 红烧鹅块
-            303: "https://i.ibb.co/BHnSWnf4/yxdcb.jpg", // 鸭血大肠煲
-            304: "https://i.ibb.co/HDRc8FMQ/hsrjz.jpg", // 红烧肉鸡爪
-            305: "https://i.ibb.co/C5DW6KTV/jyxt.jpg", // 椒盐咸蹄
-            306: "https://i.ibb.co/8njdzbXv/hsjk.jpg", // 红烧鸡块
-            307: "https://i.ibb.co/jZgmR4nR/tcpg.jpg", // 糖醋排骨
-            308: "https://i.ibb.co/LXG2McCp/yy.jpg", // 鱼圆
-            309: "https://i.ibb.co/9FYc16D/hsr.jpg", // 红烧肉
-            310: "https://i.ibb.co/xKDs5ncm/hszs.jpg", // 红烧猪手
-            311: "https://i.ibb.co/KzqK69HN/jyzt.jpg", // 椒盐猪手
-            313: "https://i.ibb.co/RTD2JQsd/wwcxr.jpg", // 娃娃菜咸肉
-            314: "https://i.ibb.co/4wcGDBJG/ypsr.jpg", // 笋干油泡塞肉
-            315: "https://i.ibb.co/Q7svShjG/jypt.jpg", // 椒盐排条
-
-            // --- 炒菜 (ID: 401-499) ---
-            409: "https://i.ibb.co/s9SvTzXY/yycd.jpg", // 银鱼炒蛋
-            
-            // --- 酒类 ---
-            901: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 
-            902: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 
-            // ... (其他保持默认)
+            101: "https://i.ibb.co/BVmjNgvz/ae.jpg", 102: "https://i.ibb.co/ffYwPZ9/jy.jpg", 103: "https://i.ibb.co/jZz31rVb/bzj.jpg", 104: "https://i.ibb.co/0RjRgS7Z/xsy.jpg", 105: "https://i.ibb.co/qLLLxCTT/to.jpg", 106: "https://i.ibb.co/KcFqfMLV/ybxzy.jpg", 107: "https://i.ibb.co/9H9rKpBH/bqdt.jpg", 108: "https://i.ibb.co/279YpnPR/jnr.jpg", 109: "https://i.ibb.co/3YSSWKgw/zjz.jpg", 110: "https://i.ibb.co/SwN6t73w/mltbxg.jpg", 111: "https://i.ibb.co/9HrRhY93/wss.jpg", 112: "https://i.ibb.co/ymHz0vRh/zmd.webp", 113: "https://i.ibb.co/pv7XfkQZ/pddf.jpg", 114: "https://i.ibb.co/NgD0B5f9/bhg.jpg",
+            201: "https://i.ibb.co/ksBwkHJB/hsjy.jpg", 202: "https://i.ibb.co/Wps1KyF8/hsmy.jpg", 203: "https://i.ibb.co/bMNYfMYm/hsst.jpg", 204: "https://i.ibb.co/ZphwB0Sq/xyss.jpg", 205: "https://i.ibb.co/nW5bjH7/schyp.jpg", 206: "https://i.ibb.co/zVt0L3f1/bsy.jpg", 207: "https://i.ibb.co/j9BzXJcW/fqlyp.jpg", 208: "https://i.ibb.co/jvjrdT6q/ysx.jpg", 209: "https://i.ibb.co/hxKHp9Jv/ybhx.jpg", 210: "https://i.ibb.co/cSH667bX/mdtj.jpg", 211: "https://i.ibb.co/ynV3TMtH/hsby.png", 212: "https://i.ibb.co/RkLYwxtx/acydft.jpg", 213: "https://i.ibb.co/jvvzw1LW/bcls.jpg", 214: "https://i.ibb.co/TxGK30RY/djyt.jpg", 215: "https://i.ibb.co/QSB89XF/szx.jpg", 216: "https://i.ibb.co/HRK7XXj/hsacy.jpg",
+            301: "https://i.ibb.co/dNKZ3tn/hsmy.jpg", 302: "https://i.ibb.co/yF0LxZ2s/hsek.jpg", 303: "https://i.ibb.co/BHnSWnf4/yxdcb.jpg", 304: "https://i.ibb.co/HDRc8FMQ/hsrjz.jpg", 305: "https://i.ibb.co/C5DW6KTV/jyxt.jpg", 306: "https://i.ibb.co/8njdzbXv/hsjk.jpg", 307: "https://i.ibb.co/jZgmR4nR/tcpg.jpg", 308: "https://i.ibb.co/LXG2McCp/yy.jpg", 309: "https://i.ibb.co/9FYc16D/hsr.jpg", 310: "https://i.ibb.co/xKDs5ncm/hszs.jpg", 311: "https://i.ibb.co/KzqK69HN/jyzt.jpg", 313: "https://i.ibb.co/RTD2JQsd/wwcxr.jpg", 314: "https://i.ibb.co/4wcGDBJG/ypsr.jpg", 315: "https://i.ibb.co/Q7svShjG/jypt.jpg",
+            409: "https://i.ibb.co/s9SvTzXY/yycd.jpg",
+            901: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 902: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 903: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 904: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 905: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 906: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 907: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 908: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 909: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 910: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 911: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 912: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 913: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80", 914: "https://images.unsplash.com/photo-1584225064636-d07392524345?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
         };
 
         const menuData = [
@@ -405,7 +308,6 @@
             { id: 112, category: "凉菜", name: "糟毛豆", price: 12, desc: "入味" },
             { id: 113, category: "凉菜", name: "皮蛋豆腐", price: 12, desc: "经典凉拌" },
             { id: 114, category: "凉菜", name: "拌黄瓜", price: 12, desc: "脆嫩" },
-
             // --- 水产 ---
             { id: 201, category: "水产", name: "甲鱼", price: 218, desc: "滋补圣品" },
             { id: 202, category: "水产", name: "大肠烧鳗鱼", price: 198, desc: "浓油赤酱" },
@@ -422,8 +324,6 @@
             { id: 213, category: "水产", name: "爆炒螺蛳", price: 20, desc: "嘬味十足" },
             { id: 214, category: "水产", name: "剁椒鱼头", price: 0, desc: "时价" },
             { id: 215, category: "水产", name: "梭子蟹", price: 0, desc: "时价" },
-            { id: 216, category: "水产", name: "红烧昂刺鱼", price: 45, desc: "3条" },
-
             // --- 肉食 ---
             { id: 301, category: "肉食", name: "麻鸭猪肚", price: 118, desc: "汤鲜味美" },
             { id: 302, category: "肉食", name: "红烧鹅块", price: 88, desc: "入味劲道" },
@@ -439,7 +339,6 @@
             { id: 313, category: "肉食", name: "娃娃菜咸肉", price: 58, desc: "鲜咸合一" },
             { id: 314, category: "肉食", name: "笋干油泡塞肉", price: 38, desc: "吸汁入味" },
             { id: 315, category: "肉食", name: "椒盐排条", price: 38, desc: "酥脆可口" },
-
             // --- 炒菜 ---
             { id: 401, category: "炒菜", name: "腰花猪肝冬笋", price: 58, desc: "三鲜爆炒" },
             { id: 402, category: "炒菜", name: "酸菜肚片", price: 48, desc: "爽脆" },
@@ -476,7 +375,6 @@
             { id: 433, category: "炒菜", name: "麻婆豆腐", price: 18, desc: "麻辣鲜香" },
             { id: 434, category: "炒菜", name: "酸辣土豆丝", price: 16, desc: "开胃" },
             { id: 435, category: "炒菜", name: "番茄炒蛋", price: 15, desc: "国民菜" },
-
             // --- 蔬食 ---
             { id: 501, category: "蔬食", name: "丝瓜毛豆", price: 25, desc: "清甜" },
             { id: 502, category: "蔬食", name: "丝瓜炒蛋", price: 25, desc: "滑嫩" },
@@ -494,7 +392,6 @@
             { id: 514, category: "蔬食", name: "葱油蚕豆", price: 30, desc: "春味" },
             { id: 515, category: "蔬食", name: "咸菜豆瓣", price: 30, desc: "鲜香" },
             { id: 516, category: "蔬食", name: "豆瓣炒蛋", price: 30, desc: "鲜嫩" },
-
             // --- 汤类 ---
             { id: 601, category: "汤类", name: "老鸭汤", price: 188, desc: "滋阴补肺" },
             { id: 602, category: "汤类", name: "老母鸡汤", price: 158, desc: "元气满满" },
@@ -505,14 +402,12 @@
             { id: 607, category: "汤类", name: "榨菜肉丝汤", price: 18, desc: "开胃" },
             { id: 608, category: "汤类", name: "番茄蛋汤", price: 15, desc: "酸甜" },
             { id: 609, category: "汤类", name: "紫菜蛋汤", price: 15, desc: "鲜美" },
-
             // --- 点心 ---
             { id: 701, category: "点心", name: "荠菜猪肉水饺", price: 30, desc: "手工现包" },
             { id: 702, category: "点心", name: "荠菜猪肉馄饨", price: 30, desc: "皮薄馅大" },
             { id: 703, category: "点心", name: "红汤面", price: 20, desc: "苏式风味" },
             { id: 704, category: "点心", name: "红糖发糕", price: 20, desc: "松软香甜" },
             { id: 705, category: "点心", name: "野菜踏饼", price: 10, desc: "4只" },
-
             // --- 酒水 ---
             { id: 801, category: "酒水", name: "椰奶(大)", price: 18, desc: "饮料 大瓶" },
             { id: 802, category: "酒水", name: "橙汁", price: 12, desc: "饮料 大瓶" },
@@ -541,6 +436,7 @@
 
         let cart = [];
 
+        // 初始化
         menuData.forEach(item => {
             const specificImg = imgMap[item.id];
             const categoryImg = imgMap[`category_${item.category}`];
@@ -639,76 +535,126 @@
         function showToast(msg) { const toast = document.getElementById('toast'); toast.innerText = msg; toast.classList.remove('opacity-0'); setTimeout(() => toast.classList.add('opacity-0'), 2000); }
 
         // ==========================================
-        // 核心重写：订单生成与下载逻辑
+        // 新增/重写的功能区：预览与下载
         // ==========================================
-        async function placeOrder() {
+
+        // 1. 打开预览模态框
+        function openOrderModal() {
             if (cart.length === 0) return showToast("请先选择菜品");
+            
+            // 关闭购物车侧边栏，打开模态框
+            toggleCart();
+            const modal = document.getElementById('order-modal');
+            const bg = document.getElementById('order-modal-bg');
+            const content = document.getElementById('order-modal-content');
+            
+            modal.classList.remove('hidden');
+            // 简单动画
+            setTimeout(() => {
+                bg.classList.remove('opacity-0');
+                content.classList.remove('opacity-0', 'scale-95');
+                content.classList.add('opacity-100', 'scale-100');
+            }, 10);
 
-            const loading = document.getElementById('loading-overlay');
+            // 生成静态信息
+            const now = new Date();
+            document.getElementById('receipt-date').innerText = now.toLocaleString('zh-CN', { hour12: false });
+            document.getElementById('receipt-id').innerText = `DAO-${now.getTime().toString().slice(-8).toUpperCase()}`;
+            
+            // 渲染列表
+            renderReceiptItems();
+            updateReceiptInfo(); // 同步输入框信息
+        }
+
+        // 2. 关闭预览模态框
+        function closeOrderModal() {
+            const modal = document.getElementById('order-modal');
+            const bg = document.getElementById('order-modal-bg');
+            const content = document.getElementById('order-modal-content');
+            
+            bg.classList.add('opacity-0');
+            content.classList.add('opacity-0', 'scale-95');
+            content.classList.remove('opacity-100', 'scale-100');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // 3. 渲染小票内的菜品
+        function renderReceiptItems() {
+            const list = document.getElementById('receipt-items-list');
+            const totalVal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+            const hasMarketPrice = cart.some(i => i.price === 0);
+
+            list.innerHTML = cart.map(item => `
+                <div class="flex mb-1 items-start">
+                    <span class="w-8 text-center text-zinc-600">${item.quantity}</span>
+                    <span class="flex-grow pr-2 text-black">${item.name}</span>
+                    <span class="text-right text-black font-bold whitespace-nowrap">${item.price === 0 ? "时价" : (item.price * item.quantity).toLocaleString()}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('receipt-total').innerText = hasMarketPrice ? `¥ ${totalVal.toLocaleString()} +` : `¥ ${totalVal.toLocaleString()}`;
+        }
+
+        // 4. 实时更新桌号和备注
+        function updateReceiptInfo() {
+            const tableInput = document.getElementById('input-table').value;
+            const noteInput = document.getElementById('input-note').value;
+            
+            const tableDisplay = document.getElementById('receipt-table');
+            const noteContainer = document.getElementById('receipt-note-container');
+            const noteDisplay = document.getElementById('receipt-note');
+
+            tableDisplay.innerText = tableInput.trim() || "--";
+            
+            if (noteInput.trim()) {
+                noteContainer.classList.remove('hidden');
+                noteDisplay.innerText = noteInput;
+            } else {
+                noteContainer.classList.add('hidden');
+            }
+        }
+
+        // 5. 执行下载
+        async function confirmDownload() {
+            const loading = document.getElementById('loading-overlay'); 
+            const receiptCard = document.getElementById('receipt-card');
+            
             loading.classList.remove('hidden');
-
+            
             try {
-                // 1. 准备数据
-                const now = new Date();
-                const dateStr = now.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
-                const timeStr = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-                const serialId = `R-${now.getFullYear().toString().substr(-2)}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}-${Math.floor(Math.random()*1000).toString().padStart(3,'0')}`;
-                
-                // 2. 填充 DOM
-                document.getElementById('receipt-date').innerText = `${dateStr} ${timeStr}`;
-                document.getElementById('receipt-id').innerText = serialId;
-                
-                const list = document.getElementById('receipt-items-list');
-                const totalVal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
-                const hasMarketPrice = cart.some(i => i.price === 0);
-
-                // 生成更漂亮的列表项
-                list.innerHTML = cart.map(item => `
-                    <div class="receipt-item-row">
-                        <span class="receipt-name">${item.name}</span>
-                        <div class="text-right">
-                             <span class="receipt-price">${item.price === 0 ? "时价" : "¥" + (item.price * item.quantity).toLocaleString()}</span>
-                             <div class="receipt-sub text-zinc-500">${item.quantity} x ${formatPrice(item.price)}</div>
-                        </div>
-                    </div>
-                `).join('');
-                
-                document.getElementById('receipt-total').innerText = hasMarketPrice ? `¥ ${totalVal.toLocaleString()} +` : `¥ ${totalVal.toLocaleString()}`;
-                
-                // 3. 等待渲染 (确保字体和样式加载完成)
+                // 等待一下确保渲染完成
                 await new Promise(r => setTimeout(r, 800)); 
 
-                // 4. 生成截图
-                const element = document.getElementById('receipt-source');
-                const canvas = await html2canvas(element, {
-                    backgroundColor: "#161616", // 确保背景色一致
-                    scale: 3, // 提高清晰度
-                    logging: false,
-                    useCORS: true, // 允许加载跨域图片（如果有）
-                    allowTaint: true
+                const canvas = await html2canvas(receiptCard, { 
+                    backgroundColor: null, // 保持透明/CSS背景
+                    scale: 3, // 高清
+                    useCORS: true,
+                    logging: false
                 });
 
-                // 5. 触发下载
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');
-                link.download = `稻田边私宴_预定单_${serialId}.png`;
-                document.body.appendChild(link);
+                const link = document.createElement('a'); 
+                link.href = canvas.toDataURL('image/png'); 
+                link.download = `稻田边私宴_预定单_${new Date().getTime()}.png`; 
                 link.click();
-                document.body.removeChild(link);
-
-                // 6. 完成后续操作
-                loading.classList.add('hidden');
-                showToast("菜单已保存至相册");
                 
-                // 7. 清空购物车并关闭侧边栏
-                cart = [];
-                updateCart();
-                toggleCart();
+                loading.classList.add('hidden'); 
+                showToast("菜单已保存至相册"); 
+                
+                // 清理
+                cart = []; 
+                updateCart(); 
+                closeOrderModal();
+                // 清空输入
+                document.getElementById('input-table').value = "";
+                document.getElementById('input-note').value = "";
 
-            } catch (e) {
-                loading.classList.add('hidden');
-                showToast("生成菜单失败，请重试");
-                console.error("Receipt generation failed:", e);
+            } catch (e) { 
+                loading.classList.add('hidden'); 
+                showToast("保存失败，请重试"); 
+                console.error(e); 
             }
         }
 
