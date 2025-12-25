@@ -600,7 +600,7 @@
             }
         }
 
-        // 5. 执行下载 (仿照参考文件重写)
+        // 5. 执行下载 (iPad 修复优化版)
         async function confirmDownload() {
             const loading = document.getElementById('loading-overlay'); 
             const receiptCard = document.getElementById('receipt-card'); // 目标元素
@@ -610,32 +610,42 @@
             loading.classList.remove('hidden');
             
             try {
-                // 参考文件中的延时逻辑，确保渲染
+                // 等待一下确保渲染完成
                 await new Promise(r => setTimeout(r, 600)); 
 
-                // 参考文件配置: scale: 3, useCORS: true
-                // 注意：这里 backgroundColor 设为 null 以保留 CSS 中的背景纹理，而不是参考文件的纯黑
+                // 核心修复配置:
+                // 1. scale 限制为2 (修复iPad 3倍屏内存溢出)
+                // 2. backgroundColor: null (保留原背景)
+                // 3. onclone: 移除 lazy 属性 (防止脚本挂起)
                 const canvas = await html2canvas(receiptCard, { 
                     backgroundColor: null, 
-                    scale: 3, 
-                    useCORS: true 
+                    scale: Math.min(window.devicePixelRatio, 2), 
+                    useCORS: true,
+                    logging: false,
+                    onclone: (doc) => {
+                        doc.querySelectorAll('img[loading="lazy"]').forEach(img => img.removeAttribute('loading'));
+                    }
                 });
 
                 const now = new Date();
+                const fileName = `稻田边私宴_预定单_${now.getTime()}.png`;
+
+                // 优先使用传统下载方式 (与您要求的"可以下载版本"一致)
+                // 在新版 iOS Safari 中，toDataURL + link.click 是最稳定的
                 const link = document.createElement('a'); 
                 link.href = canvas.toDataURL('image/png'); 
-                link.download = `稻田边私宴_预定单_${now.getTime()}.png`; 
-                document.body.appendChild(link); // 兼容性操作
+                link.download = fileName; 
+                document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
 
                 loading.classList.add('hidden'); 
-                showToast("菜单已成功保存至相册"); 
+                showToast("菜单已成功保存"); 
                 onDownloadSuccess();
 
             } catch (e) { 
                 loading.classList.add('hidden'); 
-                showToast("保存失败"); 
+                showToast("保存失败，请手动截屏"); 
                 console.error(e); 
             }
         }
