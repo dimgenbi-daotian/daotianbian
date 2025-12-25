@@ -181,32 +181,36 @@
                 display: none !important;
             }
 
-            /* 5. 核心：菜品列表重构为垂直布局 */
+            /* 5. 核心：菜品列表重构为垂直布局 (使用Flexbox防止错乱) */
             #receipt-items-list .flex {
-                display: block !important; /* 强制换行 */
+                display: flex !important;
+                flex-wrap: wrap !important;
                 margin-bottom: 12px !important;
                 border-bottom: 1px dashed #000;
                 padding-bottom: 5px;
                 position: relative;
+                align-items: baseline !important;
             }
 
-            /* 菜名：独占一行，超大 */
+            /* 菜名：顺序1，独占一行，超大 */
             #receipt-items-list .flex-grow {
-                display: block !important;
+                order: 1 !important;
                 width: 100% !important;
                 font-size: 24px !important;
                 font-weight: 900 !important;
                 line-height: 1.2 !important;
                 margin-bottom: 4px !important;
+                white-space: normal !important; /* 允许换行 */
             }
 
-            /* 数量：放在第二行开头 */
+            /* 数量：顺序2，放在第二行左侧 */
             #receipt-items-list span:first-child {
-                display: inline-block !important;
+                order: 2 !important;
                 font-size: 20px !important;
                 font-weight: bold !important;
                 width: auto !important;
                 text-align: left !important;
+                margin-right: 10px !important;
             }
             /* 给数量加个 "x" 前缀视觉效果 (通过伪元素) */
             #receipt-items-list span:first-child::before {
@@ -214,10 +218,10 @@
                 font-size: 16px;
             }
 
-            /* 价格：放在第二行最右 */
+            /* 价格：顺序3，放在第二行右侧 (自动推到最右) */
             #receipt-items-list span:last-child {
-                display: inline-block !important;
-                float: right !important;
+                order: 3 !important;
+                margin-left: auto !important;
                 font-size: 20px !important;
                 font-weight: bold !important;
             }
