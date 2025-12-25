@@ -77,7 +77,7 @@
             border: 3px solid #c5a059;
             color: #c5a059;
             transform: rotate(-15deg);
-            mask-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="); /* 简单的遮罩模拟印章纹理，实际使用可忽略 */
+            mask-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=");
             opacity: 0.8;
         }
     </style>
@@ -150,7 +150,6 @@
         </main>
     </div>
 
-    <!-- 购物车侧边栏 -->
     <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/70 z-50 hidden backdrop-blur-md"></div>
     <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-full max-w-md bg-[#0f0f0f] z-50 shadow-2xl translate-x-full cart-drawer flex flex-col border-l border-zinc-800">
         <div class="p-8 border-b border-zinc-800 flex justify-between items-center">
@@ -160,20 +159,15 @@
         <div id="cart-items" class="flex-grow overflow-y-auto p-8 space-y-6 font-sans text-xs"></div>
         <div class="p-8 border-t border-zinc-800 bg-black/30">
             <div class="flex justify-between items-end mb-6"><span class="text-zinc-500 text-sm tracking-widest uppercase">总计费用</span><span id="cart-total" class="text-3xl font-bold text-[#c5a059]">¥ 0</span></div>
-            <!-- 修改：点击按钮触发预览弹窗 -->
             <button onclick="openOrderModal()" class="w-full btn-gold text-white py-5 font-bold tracking-[0.3em] uppercase transition-all shadow-2xl">预览并生成菜单</button>
         </div>
     </div>
 
-    <!-- 订单确认与预览模态框 (新功能) -->
     <div id="order-modal" class="fixed inset-0 z-[60] hidden">
-        <!-- 背景遮罩 -->
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="order-modal-bg" onclick="closeOrderModal()"></div>
         
-        <!-- 模态框主体 -->
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[90vh] md:h-auto flex flex-col md:flex-row gap-0 md:gap-8 p-4 pointer-events-none opacity-0 scale-95 transition-all duration-300" id="order-modal-content">
             
-            <!-- 左侧：输入控制区 -->
             <div class="bg-[#18181b] border border-zinc-800 rounded-xl p-6 md:p-8 flex-1 pointer-events-auto shadow-2xl flex flex-col">
                 <div class="mb-6">
                     <h3 class="text-xl text-[#c5a059] font-serif font-bold mb-2">订单确认</h3>
@@ -206,11 +200,8 @@
                 </div>
             </div>
 
-            <!-- 右侧：实时预览区 (将被截图的区域) -->
             <div class="flex-1 flex items-center justify-center bg-[#0a0a0a]/50 rounded-xl border border-zinc-800/50 p-4 md:p-8 overflow-y-auto pointer-events-auto">
-                <!-- 实际的小票卡片 -->
                 <div id="receipt-card" class="w-full max-w-[380px] p-8 relative mx-auto font-sans text-black">
-                    <!-- 顶部 -->
                     <div class="text-center mb-6 border-b-2 border-black pb-4">
                         <div class="w-12 h-12 border-2 border-black mx-auto flex items-center justify-center mb-3">
                             <span class="font-serif font-bold text-xl">稻</span>
@@ -219,14 +210,12 @@
                         <p class="text-[9px] uppercase tracking-[0.2em] opacity-60">Reservation Menu</p>
                     </div>
                     
-                    <!-- 信息栏 -->
                     <div class="text-[10px] mb-6 space-y-1.5 font-mono text-zinc-600">
                         <div class="flex justify-between"><span>日期 DATE:</span><span id="receipt-date" class="font-bold text-black"></span></div>
                         <div class="flex justify-between"><span>单号 NO.:</span><span id="receipt-id" class="font-bold text-black"></span></div>
                         <div class="flex justify-between"><span>桌号 TABLE:</span><span id="receipt-table" class="font-bold text-black border-b border-dashed border-black px-1 min-w-[20px] text-right">--</span></div>
                     </div>
 
-                    <!-- 菜品列表 -->
                     <div class="receipt-line mb-4"></div>
                     <div class="flex text-[10px] font-bold mb-2 uppercase tracking-wider text-zinc-500">
                         <span class="w-8">Qty</span>
@@ -234,29 +223,24 @@
                         <span class="text-right">Amt</span>
                     </div>
                     <div id="receipt-items-list" class="space-y-2 mb-6 text-xs min-h-[100px]">
-                        <!-- JS 填充 -->
-                    </div>
+                        </div>
                     <div class="receipt-line mb-4"></div>
 
-                    <!-- 合计 -->
                     <div class="flex justify-between items-baseline mb-6">
                         <span class="text-sm font-bold uppercase">Total Amount</span>
                         <span id="receipt-total" class="text-2xl font-serif font-bold"></span>
                     </div>
 
-                    <!-- 备注区域 -->
                     <div id="receipt-note-container" class="mb-8 hidden">
                         <p class="text-[9px] font-bold uppercase mb-1 text-zinc-500">Remarks:</p>
                         <p id="receipt-note" class="text-xs font-mono bg-zinc-100 p-2 break-words border-l-2 border-[#c5a059]"></p>
                     </div>
 
-                    <!-- 底部 -->
                     <div class="text-center space-y-2">
                         <div class="inline-block border border-black px-4 py-1 text-[10px] tracking-widest uppercase font-bold">Thank You</div>
                         <p class="text-[9px] text-zinc-500 italic font-serif">稻田边·私宴 - 不时不食</p>
                     </div>
 
-                    <!-- 装饰性印章 -->
                     <div class="absolute bottom-8 right-8 w-24 h-24 border-4 border-[#c5a059] rounded-full flex items-center justify-center opacity-20 pointer-events-none" style="transform: rotate(-25deg);">
                         <span class="text-[#c5a059] font-serif font-bold text-xs tracking-widest uppercase">Confirmed</span>
                     </div>
@@ -265,16 +249,15 @@
         </div>
     </div>
 
-    <!-- 加载与提示 -->
     <div id="loading-overlay" class="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center hidden">
-        <div class="w-12 h-12 border-2 border-[#c5a059] border-t-transparent rounded-full animate-spin mb-4"></div><p class="text-[#c5a059] tracking-[0.3em] text-sm uppercase">正在绘制菜单...</p>
+        <div class="w-12 h-12 border-2 border-[#c5a059] border-t-transparent rounded-full animate-spin mb-4"></div><p class="text-[#c5a059] tracking-[0.3em] text-sm uppercase">正在生成专属订制菜单...</p>
     </div>
 
     <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 border border-[#c5a059] bg-black text-[#c5a059] px-8 py-3 rounded-none shadow-2xl opacity-0 transition-opacity pointer-events-none z-[80] tracking-widest text-sm uppercase">已选入菜单</div>
 
     <script>
         // ==========================================
-        // 图片资源映射配置区 (保持原样)
+        // 图片资源映射配置区
         // ==========================================
         const imgMap = {
             "category_凉菜": "https://images.unsplash.com/photo-1608652763176-00c82325712a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
@@ -535,7 +518,7 @@
         function showToast(msg) { const toast = document.getElementById('toast'); toast.innerText = msg; toast.classList.remove('opacity-0'); setTimeout(() => toast.classList.add('opacity-0'), 2000); }
 
         // ==========================================
-        // 新增/重写的功能区：预览与下载
+        // 功能区：预览与下载
         // ==========================================
 
         // 1. 打开预览模态框
@@ -617,79 +600,43 @@
             }
         }
 
-        // 5. 执行下载 (重写适配 iPad/iOS)
+        // 5. 执行下载 (仿照参考文件重写)
         async function confirmDownload() {
             const loading = document.getElementById('loading-overlay'); 
-            const receiptCard = document.getElementById('receipt-card');
+            const receiptCard = document.getElementById('receipt-card'); // 目标元素
             
+            if (!receiptCard) return showToast("找不到菜单元素");
+
             loading.classList.remove('hidden');
             
             try {
-                // 等待一下确保渲染完成
-                await new Promise(r => setTimeout(r, 800)); 
+                // 参考文件中的延时逻辑，确保渲染
+                await new Promise(r => setTimeout(r, 600)); 
 
+                // 参考文件配置: scale: 3, useCORS: true
+                // 注意：这里 backgroundColor 设为 null 以保留 CSS 中的背景纹理，而不是参考文件的纯黑
                 const canvas = await html2canvas(receiptCard, { 
-                    backgroundColor: null,
+                    backgroundColor: null, 
                     scale: 3, 
-                    useCORS: true,
-                    logging: false
+                    useCORS: true 
                 });
 
-                const fileName = `稻田边私宴_预定单_${new Date().getTime()}.png`;
+                const now = new Date();
+                const link = document.createElement('a'); 
+                link.href = canvas.toDataURL('image/png'); 
+                link.download = `稻田边私宴_预定单_${now.getTime()}.png`; 
+                document.body.appendChild(link); // 兼容性操作
+                link.click();
+                document.body.removeChild(link);
 
-                // 尝试使用 Web Share API (主要针对 iOS/iPad/Android)
-                if (navigator.share && navigator.canShare) {
-                    canvas.toBlob(async (blob) => {
-                        const file = new File([blob], fileName, { type: 'image/png' });
-                        const shareData = {
-                            files: [file],
-                            title: '稻田边·私宴',
-                            text: '您的专属订制菜单'
-                        };
-
-                        if (navigator.canShare(shareData)) {
-                            try {
-                                await navigator.share(shareData);
-                                loading.classList.add('hidden');
-                                showToast("菜单已调起分享/保存");
-                                onDownloadSuccess();
-                            } catch (err) {
-                                // 用户取消分享或失败，尝试回退到传统下载
-                                console.log('Share failed or canceled, falling back to download link', err);
-                                fallbackDownload(canvas, fileName);
-                            }
-                        } else {
-                            fallbackDownload(canvas, fileName);
-                        }
-                    }, 'image/png');
-                } else {
-                    // PC端或不支持分享的浏览器
-                    fallbackDownload(canvas, fileName);
-                }
+                loading.classList.add('hidden'); 
+                showToast("菜单已成功保存至相册"); 
+                onDownloadSuccess();
 
             } catch (e) { 
                 loading.classList.add('hidden'); 
-                showToast("保存失败，请截屏保存"); 
+                showToast("保存失败"); 
                 console.error(e); 
-            }
-        }
-
-        function fallbackDownload(canvas, fileName) {
-            const loading = document.getElementById('loading-overlay');
-            try {
-                const link = document.createElement('a'); 
-                link.href = canvas.toDataURL('image/png'); 
-                link.download = fileName; 
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                loading.classList.add('hidden'); 
-                showToast("菜单已尝试保存"); 
-                onDownloadSuccess();
-            } catch(e) {
-                loading.classList.add('hidden');
-                console.error(e);
             }
         }
 
