@@ -617,7 +617,7 @@
             }
         }
 
-        // 5. 执行下载
+        // 5. 执行下载 (重写适配 iPad/iOS)
         async function confirmDownload() {
             const loading = document.getElementById('loading-overlay'); 
             const receiptCard = document.getElementById('receipt-card');
@@ -629,33 +629,77 @@
                 await new Promise(r => setTimeout(r, 800)); 
 
                 const canvas = await html2canvas(receiptCard, { 
-                    backgroundColor: null, // 保持透明/CSS背景
-                    scale: 3, // 高清
+                    backgroundColor: null,
+                    scale: 3, 
                     useCORS: true,
                     logging: false
                 });
 
-                const link = document.createElement('a'); 
-                link.href = canvas.toDataURL('image/png'); 
-                link.download = `稻田边私宴_预定单_${new Date().getTime()}.png`; 
-                link.click();
-                
-                loading.classList.add('hidden'); 
-                showToast("菜单已保存至相册"); 
-                
-                // 清理
-                cart = []; 
-                updateCart(); 
-                closeOrderModal();
-                // 清空输入
-                document.getElementById('input-table').value = "";
-                document.getElementById('input-note').value = "";
+                const fileName = `稻田边私宴_预定单_${new Date().getTime()}.png`;
+
+                // 尝试使用 Web Share API (主要针对 iOS/iPad/Android)
+                if (navigator.share && navigator.canShare) {
+                    canvas.toBlob(async (blob) => {
+                        const file = new File([blob], fileName, { type: 'image/png' });
+                        const shareData = {
+                            files: [file],
+                            title: '稻田边·私宴',
+                            text: '您的专属订制菜单'
+                        };
+
+                        if (navigator.canShare(shareData)) {
+                            try {
+                                await navigator.share(shareData);
+                                loading.classList.add('hidden');
+                                showToast("菜单已调起分享/保存");
+                                onDownloadSuccess();
+                            } catch (err) {
+                                // 用户取消分享或失败，尝试回退到传统下载
+                                console.log('Share failed or canceled, falling back to download link', err);
+                                fallbackDownload(canvas, fileName);
+                            }
+                        } else {
+                            fallbackDownload(canvas, fileName);
+                        }
+                    }, 'image/png');
+                } else {
+                    // PC端或不支持分享的浏览器
+                    fallbackDownload(canvas, fileName);
+                }
 
             } catch (e) { 
                 loading.classList.add('hidden'); 
-                showToast("保存失败，请重试"); 
+                showToast("保存失败，请截屏保存"); 
                 console.error(e); 
             }
+        }
+
+        function fallbackDownload(canvas, fileName) {
+            const loading = document.getElementById('loading-overlay');
+            try {
+                const link = document.createElement('a'); 
+                link.href = canvas.toDataURL('image/png'); 
+                link.download = fileName; 
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                loading.classList.add('hidden'); 
+                showToast("菜单已尝试保存"); 
+                onDownloadSuccess();
+            } catch(e) {
+                loading.classList.add('hidden');
+                console.error(e);
+            }
+        }
+
+        function onDownloadSuccess() {
+             // 清理
+             cart = []; 
+             updateCart(); 
+             closeOrderModal();
+             document.getElementById('input-table').value = "";
+             document.getElementById('input-note').value = "";
         }
 
         window.onload = () => {
