@@ -165,30 +165,22 @@
 
     <div id="order-modal" class="fixed inset-0 z-[60] hidden">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0" id="order-modal-bg" onclick="closeOrderModal()"></div>
-        
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[90vh] md:h-auto flex flex-col md:flex-row gap-0 md:gap-8 p-4 pointer-events-none opacity-0 scale-95 transition-all duration-300" id="order-modal-content">
-            
             <div class="bg-[#18181b] border border-zinc-800 rounded-xl p-6 md:p-8 flex-1 pointer-events-auto shadow-2xl flex flex-col">
                 <div class="mb-6">
                     <h3 class="text-xl text-[#c5a059] font-serif font-bold mb-2">订单确认</h3>
                     <p class="text-zinc-500 text-xs">请完善信息以生成您的专属菜单</p>
                 </div>
-                
                 <div class="space-y-4 mb-8">
                     <div>
                         <label class="block text-zinc-400 text-xs uppercase tracking-wider mb-2">桌号 / 称呼</label>
-                        <input type="text" id="input-table" placeholder="例如：8号桌 或 李先生" 
-                            class="w-full bg-black/50 border border-zinc-700 rounded p-3 text-white focus:border-[#c5a059] focus:outline-none transition-colors text-sm"
-                            oninput="updateReceiptInfo()">
+                        <input type="text" id="input-table" placeholder="例如：8号桌 或 李先生" class="w-full bg-black/50 border border-zinc-700 rounded p-3 text-white focus:border-[#c5a059] focus:outline-none transition-colors text-sm" oninput="updateReceiptInfo()">
                     </div>
                     <div>
                         <label class="block text-zinc-400 text-xs uppercase tracking-wider mb-2">备注要求</label>
-                        <textarea id="input-note" rows="3" placeholder="例如：微辣、免葱姜、需要宝宝椅..." 
-                            class="w-full bg-black/50 border border-zinc-700 rounded p-3 text-white focus:border-[#c5a059] focus:outline-none transition-colors text-sm resize-none"
-                            oninput="updateReceiptInfo()"></textarea>
+                        <textarea id="input-note" rows="3" placeholder="例如：微辣、免葱姜、需要宝宝椅..." class="w-full bg-black/50 border border-zinc-700 rounded p-3 text-white focus:border-[#c5a059] focus:outline-none transition-colors text-sm resize-none" oninput="updateReceiptInfo()"></textarea>
                     </div>
                 </div>
-
                 <div class="mt-auto space-y-3">
                     <button onclick="confirmDownload()" class="w-full btn-gold text-white py-4 font-bold tracking-widest uppercase rounded shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
@@ -199,7 +191,6 @@
                     </button>
                 </div>
             </div>
-
             <div class="flex-1 flex items-center justify-center bg-[#0a0a0a]/50 rounded-xl border border-zinc-800/50 p-4 md:p-8 overflow-y-auto pointer-events-auto">
                 <div id="receipt-card" class="w-full max-w-[380px] p-8 relative mx-auto font-sans text-black">
                     <div class="text-center mb-6 border-b-2 border-black pb-4">
@@ -209,38 +200,31 @@
                         <h2 class="text-2xl font-serif font-bold tracking-widest mb-1">预定单</h2>
                         <p class="text-[9px] uppercase tracking-[0.2em] opacity-60">Reservation Menu</p>
                     </div>
-                    
                     <div class="text-[10px] mb-6 space-y-1.5 font-mono text-zinc-600">
                         <div class="flex justify-between"><span>日期 DATE:</span><span id="receipt-date" class="font-bold text-black"></span></div>
                         <div class="flex justify-between"><span>单号 NO.:</span><span id="receipt-id" class="font-bold text-black"></span></div>
                         <div class="flex justify-between"><span>桌号 TABLE:</span><span id="receipt-table" class="font-bold text-black border-b border-dashed border-black px-1 min-w-[20px] text-right">--</span></div>
                     </div>
-
                     <div class="receipt-line mb-4"></div>
                     <div class="flex text-[10px] font-bold mb-2 uppercase tracking-wider text-zinc-500">
                         <span class="w-8">Qty</span>
                         <span class="flex-grow">Item</span>
                         <span class="text-right">Amt</span>
                     </div>
-                    <div id="receipt-items-list" class="space-y-2 mb-6 text-xs min-h-[100px]">
-                        </div>
+                    <div id="receipt-items-list" class="space-y-2 mb-6 text-xs min-h-[100px]"></div>
                     <div class="receipt-line mb-4"></div>
-
                     <div class="flex justify-between items-baseline mb-6">
                         <span class="text-sm font-bold uppercase">Total Amount</span>
                         <span id="receipt-total" class="text-2xl font-serif font-bold"></span>
                     </div>
-
                     <div id="receipt-note-container" class="mb-8 hidden">
                         <p class="text-[9px] font-bold uppercase mb-1 text-zinc-500">Remarks:</p>
                         <p id="receipt-note" class="text-xs font-mono bg-zinc-100 p-2 break-words border-l-2 border-[#c5a059]"></p>
                     </div>
-
                     <div class="text-center space-y-2">
                         <div class="inline-block border border-black px-4 py-1 text-[10px] tracking-widest uppercase font-bold">Thank You</div>
                         <p class="text-[9px] text-zinc-500 italic font-serif">稻田边·私宴 - 不时不食</p>
                     </div>
-
                     <div class="absolute bottom-8 right-8 w-24 h-24 border-4 border-[#c5a059] rounded-full flex items-center justify-center opacity-20 pointer-events-none" style="transform: rotate(-25deg);">
                         <span class="text-[#c5a059] font-serif font-bold text-xs tracking-widest uppercase">Confirmed</span>
                     </div>
@@ -250,14 +234,14 @@
     </div>
 
     <div id="loading-overlay" class="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center hidden">
-        <div class="w-12 h-12 border-2 border-[#c5a059] border-t-transparent rounded-full animate-spin mb-4"></div><p class="text-[#c5a059] tracking-[0.3em] text-sm uppercase">正在生成专属订制菜单...</p>
+        <div class="w-12 h-12 border-2 border-[#c5a059] border-t-transparent rounded-full animate-spin mb-4"></div><p class="text-[#c5a059] tracking-[0.3em] text-sm uppercase">正在绘制菜单...</p>
     </div>
 
     <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 border border-[#c5a059] bg-black text-[#c5a059] px-8 py-3 rounded-none shadow-2xl opacity-0 transition-opacity pointer-events-none z-[80] tracking-widest text-sm uppercase">已选入菜单</div>
 
     <script>
         // ==========================================
-        // 图片资源映射配置区
+        // 配置数据
         // ==========================================
         const imgMap = {
             "category_凉菜": "https://images.unsplash.com/photo-1608652763176-00c82325712a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
@@ -521,55 +505,41 @@
         // 功能区：预览与下载
         // ==========================================
 
-        // 1. 打开预览模态框
         function openOrderModal() {
             if (cart.length === 0) return showToast("请先选择菜品");
-            
-            // 关闭购物车侧边栏，打开模态框
             toggleCart();
             const modal = document.getElementById('order-modal');
             const bg = document.getElementById('order-modal-bg');
             const content = document.getElementById('order-modal-content');
-            
             modal.classList.remove('hidden');
-            // 简单动画
             setTimeout(() => {
                 bg.classList.remove('opacity-0');
                 content.classList.remove('opacity-0', 'scale-95');
                 content.classList.add('opacity-100', 'scale-100');
             }, 10);
-
-            // 生成静态信息
             const now = new Date();
             document.getElementById('receipt-date').innerText = now.toLocaleString('zh-CN', { hour12: false });
             document.getElementById('receipt-id').innerText = `DAO-${now.getTime().toString().slice(-8).toUpperCase()}`;
-            
-            // 渲染列表
             renderReceiptItems();
-            updateReceiptInfo(); // 同步输入框信息
+            updateReceiptInfo();
         }
 
-        // 2. 关闭预览模态框
         function closeOrderModal() {
             const modal = document.getElementById('order-modal');
             const bg = document.getElementById('order-modal-bg');
             const content = document.getElementById('order-modal-content');
-            
             bg.classList.add('opacity-0');
             content.classList.add('opacity-0', 'scale-95');
             content.classList.remove('opacity-100', 'scale-100');
-            
             setTimeout(() => {
                 modal.classList.add('hidden');
             }, 300);
         }
 
-        // 3. 渲染小票内的菜品
         function renderReceiptItems() {
             const list = document.getElementById('receipt-items-list');
             const totalVal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
             const hasMarketPrice = cart.some(i => i.price === 0);
-
             list.innerHTML = cart.map(item => `
                 <div class="flex mb-1 items-start">
                     <span class="w-8 text-center text-zinc-600">${item.quantity}</span>
@@ -577,21 +547,16 @@
                     <span class="text-right text-black font-bold whitespace-nowrap">${item.price === 0 ? "时价" : (item.price * item.quantity).toLocaleString()}</span>
                 </div>
             `).join('');
-            
             document.getElementById('receipt-total').innerText = hasMarketPrice ? `¥ ${totalVal.toLocaleString()} +` : `¥ ${totalVal.toLocaleString()}`;
         }
 
-        // 4. 实时更新桌号和备注
         function updateReceiptInfo() {
             const tableInput = document.getElementById('input-table').value;
             const noteInput = document.getElementById('input-note').value;
-            
             const tableDisplay = document.getElementById('receipt-table');
             const noteContainer = document.getElementById('receipt-note-container');
             const noteDisplay = document.getElementById('receipt-note');
-
             tableDisplay.innerText = tableInput.trim() || "--";
-            
             if (noteInput.trim()) {
                 noteContainer.classList.remove('hidden');
                 noteDisplay.innerText = noteInput;
@@ -600,58 +565,50 @@
             }
         }
 
-        // 5. 执行下载 (iPad 修复优化版)
+        // 核心修改：使用与"可以下载版本.html"一致的下载逻辑
         async function confirmDownload() {
             const loading = document.getElementById('loading-overlay'); 
-            const receiptCard = document.getElementById('receipt-card'); // 目标元素
+            const receiptCard = document.getElementById('receipt-card');
             
             if (!receiptCard) return showToast("找不到菜单元素");
 
             loading.classList.remove('hidden');
             
             try {
-                // 等待一下确保渲染完成
                 await new Promise(r => setTimeout(r, 600)); 
 
-                // 核心修复配置:
-                // 1. scale 限制为2 (修复iPad 3倍屏内存溢出)
-                // 2. backgroundColor: null (保留原背景)
-                // 3. onclone: 移除 lazy 属性 (防止脚本挂起)
+                // 重点：scale设为2，backgroundColor设为null以保持原设计
                 const canvas = await html2canvas(receiptCard, { 
                     backgroundColor: null, 
-                    scale: Math.min(window.devicePixelRatio, 2), 
+                    scale: 2,  // 相比3倍，2倍在iOS上更不容易崩溃
                     useCORS: true,
-                    logging: false,
-                    onclone: (doc) => {
-                        doc.querySelectorAll('img[loading="lazy"]').forEach(img => img.removeAttribute('loading'));
-                    }
+                    logging: false
                 });
 
                 const now = new Date();
                 const fileName = `稻田边私宴_预定单_${now.getTime()}.png`;
 
-                // 优先使用传统下载方式 (与您要求的"可以下载版本"一致)
-                // 在新版 iOS Safari 中，toDataURL + link.click 是最稳定的
+                // 强制使用 toDataURL + Link Download (iOS 上最稳的方案)
+                const dataUrl = canvas.toDataURL('image/png');
                 const link = document.createElement('a'); 
-                link.href = canvas.toDataURL('image/png'); 
+                link.href = dataUrl;
                 link.download = fileName; 
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
 
                 loading.classList.add('hidden'); 
-                showToast("菜单已成功保存"); 
+                showToast("菜单已生成，请长按保存"); 
                 onDownloadSuccess();
 
             } catch (e) { 
                 loading.classList.add('hidden'); 
-                showToast("保存失败，请手动截屏"); 
+                showToast("保存失败，请截图"); 
                 console.error(e); 
             }
         }
 
         function onDownloadSuccess() {
-             // 清理
              cart = []; 
              updateCart(); 
              closeOrderModal();
