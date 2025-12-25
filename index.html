@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>稻田边·私宴 - 在线预订系统</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -82,7 +83,7 @@
         .receipt-line { border-bottom: 1px dashed #a8a29e; }
 
         /* =========================================
-           核心修改：2寸小票机专用打印样式 (58mm)
+           2寸小票机专用打印样式 (58mm)
         ========================================= */
         @media print {
             @page {
@@ -100,7 +101,6 @@
                 overflow: hidden;
             }
 
-            /* 显示小票区域 */
             #order-modal, #order-modal-content, #receipt-card, #receipt-card * {
                 visibility: visible;
                 height: auto;
@@ -121,12 +121,10 @@
                 padding: 0;
             }
 
-            /* 隐藏左侧输入框 */
             #order-modal-content > div:first-child { 
                 display: none; 
             }
 
-            /* 小票容器设置 */
             #order-modal-content > div:last-child {
                 border: none;
                 background: white;
@@ -139,34 +137,26 @@
                 margin: 0;
                 width: 100% !important;
                 max-width: 100% !important;
-                padding: 5px 0 !important; /* 极窄边距 */
+                padding: 5px 0 !important;
                 background: white !important;
                 color: black !important;
             }
 
-            /* --- 字体与布局极致优化 (针对58mm) --- */
-            
-            /* 1. 隐藏多余装饰，节省空间 */
-            #receipt-card .w-12, /* 顶部的装饰圆圈 */
-            .opacity-20, /* 右下角水印 */
-            .receipt-line, /* 虚线也简化 */
+            #receipt-card .w-12, 
+            .opacity-20, 
+            .receipt-line, 
             .text-zinc-600 {
                 display: none !important;
             }
             
-            /* 2. 标题区域 */
             #receipt-card h2 {
-                font-size: 32px !important; /* 标题巨大 */
+                font-size: 32px !important;
                 font-weight: 900 !important;
                 margin-bottom: 5px !important;
                 text-align: center;
                 line-height: 1.1;
             }
-            #receipt-card p {
-                color: black !important;
-            }
 
-            /* 3. 信息行 (日期、单号) */
             .font-mono {
                 font-size: 18px !important;
                 font-weight: bold !important;
@@ -176,12 +166,10 @@
                 padding-bottom: 5px;
             }
             
-            /* 4. 列表表头隐藏 (小票不需要Qty Item Amt这类英文表头，直接看内容) */
             #receipt-card .uppercase.tracking-wider.text-zinc-500 {
                 display: none !important;
             }
 
-            /* 5. 核心：菜品列表重构为垂直布局 (使用Flexbox防止错乱) */
             #receipt-items-list .flex {
                 display: flex !important;
                 flex-wrap: wrap !important;
@@ -192,7 +180,6 @@
                 align-items: baseline !important;
             }
 
-            /* 菜名：顺序1，独占一行，超大 */
             #receipt-items-list .flex-grow {
                 order: 1 !important;
                 width: 100% !important;
@@ -200,10 +187,9 @@
                 font-weight: 900 !important;
                 line-height: 1.2 !important;
                 margin-bottom: 4px !important;
-                white-space: normal !important; /* 允许换行 */
+                white-space: normal !important;
             }
 
-            /* 数量：顺序2，放在第二行左侧 */
             #receipt-items-list span:first-child {
                 order: 2 !important;
                 font-size: 20px !important;
@@ -212,13 +198,11 @@
                 text-align: left !important;
                 margin-right: 10px !important;
             }
-            /* 给数量加个 "x" 前缀视觉效果 (通过伪元素) */
             #receipt-items-list span:first-child::before {
                 content: "x ";
                 font-size: 16px;
             }
 
-            /* 价格：顺序3，放在第二行右侧 (自动推到最右) */
             #receipt-items-list span:last-child {
                 order: 3 !important;
                 margin-left: auto !important;
@@ -226,7 +210,6 @@
                 font-weight: bold !important;
             }
 
-            /* 6. 总价区域 */
             .flex.justify-between.items-baseline.mb-6 {
                 margin-top: 10px !important;
                 display: block !important;
@@ -239,12 +222,11 @@
                 float: left;
             }
             #receipt-total {
-                font-size: 42px !important; /* 总价特大 */
+                font-size: 42px !important;
                 font-weight: 900 !important;
                 display: block !important;
             }
 
-            /* 7. 备注区域 */
             #receipt-note-container {
                 display: block !important;
                 margin-top: 15px !important;
@@ -257,12 +239,6 @@
                 padding: 5px !important;
             }
             
-            /* 底部Logo */
-            .w-12.h-12.border-2 {
-                display: none !important;
-            }
-            
-            /* 隐藏无关的装饰 */
             .no-print { display: none !important; }
         }
     </style>
@@ -372,9 +348,9 @@
                 </div>
 
                 <div class="mt-auto space-y-3">
-                    <button onclick="printOrder()" class="w-full btn-gold text-white py-4 font-bold tracking-widest uppercase rounded shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-                        保存为 PDF / 打印
+                    <button onclick="saveOrderImage()" class="w-full btn-gold text-white py-4 font-bold tracking-widest uppercase rounded shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        保存订单图片
                     </button>
                     
                     <button onclick="copyOrderText()" class="w-full bg-zinc-800 text-zinc-300 py-3 font-bold tracking-widest uppercase rounded hover:bg-zinc-700 transition-all flex items-center justify-center gap-2">
@@ -440,65 +416,66 @@
     <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 border border-[#c5a059] bg-black text-[#c5a059] px-8 py-3 rounded-none shadow-2xl opacity-0 transition-opacity pointer-events-none z-[80] tracking-widest text-sm uppercase">已选入菜单</div>
 
     <script>
-        const imgMap = {
-            "category_凉菜": "https://images.unsplash.com/photo-1608652763176-00c82325712a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "category_水产": "https://images.unsplash.com/photo-1598514983157-141707355786?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "category_肉食": "https://images.unsplash.com/photo-1608652763176-00c82325712a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "category_炒菜": "https://images.unsplash.com/photo-1616639923252-7010a1117067?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "category_蔬食": "https://images.unsplash.com/photo-1598514983157-141707355786?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "category_汤类": "https://images.unsplash.com/photo-1626109450480-1890764c7520?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "category_点心": "https://images.unsplash.com/photo-1611308377777-080264212029?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "category_酒水": "https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            101: "https://i.ibb.co/BVmjNgvz/ae.jpg", 102: "https://i.ibb.co/ffYwPZ9/jy.jpg", 103: "https://i.ibb.co/jZz31rVb/bzj.jpg", 104: "https://i.ibb.co/0RjRgS7Z/xsy.jpg", 105: "https://i.ibb.co/qLLLxCTT/to.jpg", 106: "https://i.ibb.co/KcFqfMLV/ybxzy.jpg", 107: "https://i.ibb.co/9H9rKpBH/bqdt.jpg", 108: "https://i.ibb.co/279YpnPR/jnr.jpg", 109: "https://i.ibb.co/3YSSWKgw/zjz.jpg", 110: "https://i.ibb.co/SwN6t73w/mltbxg.jpg", 111: "https://i.ibb.co/9HrRhY93/wss.jpg", 112: "https://i.ibb.co/ymHz0vRh/zmd.webp", 113: "https://i.ibb.co/pv7XfkQZ/pddf.jpg", 114: "https://i.ibb.co/NgD0B5f9/bhg.jpg",
-            201: "https://i.ibb.co/ksBwkHJB/hsjy.jpg", 202: "https://i.ibb.co/Wps1KyF8/hsmy.jpg", 203: "https://i.ibb.co/bMNYfMYm/hsst.jpg", 204: "https://i.ibb.co/ZphwB0Sq/xyss.jpg", 205: "https://i.ibb.co/nW5bjH7/schyp.jpg", 206: "https://i.ibb.co/zVt0L3f1/bsy.jpg", 207: "https://i.ibb.co/j9BzXJcW/fqlyp.jpg", 208: "https://i.ibb.co/jvjrdT6q/ysx.jpg", 209: "https://i.ibb.co/hxKHp9Jv/ybhx.jpg", 210: "https://i.ibb.co/cSH667bX/mdtj.jpg", 211: "https://i.ibb.co/ynV3TMtH/hsby.png", 212: "https://i.ibb.co/RkLYwxtx/acydft.jpg", 213: "https://i.ibb.co/jvvzw1LW/bcls.jpg", 214: "https://i.ibb.co/TxGK30RY/djyt.jpg", 215: "https://i.ibb.co/QSB89XF/szx.jpg",
-            301: "https://i.ibb.co/dNKZ3tn/hsmy.jpg", 302: "https://i.ibb.co/yF0LxZ2s/hsek.jpg", 303: "https://i.ibb.co/BHnSWnf4/yxdcb.jpg", 304: "https://i.ibb.co/HDRc8FMQ/hsrjz.jpg", 305: "https://i.ibb.co/C5DW6KTV/jyxt.jpg", 306: "https://i.ibb.co/8njdzbXv/hsjk.jpg", 307: "https://i.ibb.co/jZgmR4nR/tcpg.jpg", 308: "https://i.ibb.co/LXG2McCp/yy.jpg", 309: "https://i.ibb.co/9FYc16D/hsr.jpg", 310: "https://i.ibb.co/xKDs5ncm/hszs.jpg", 311: "https://i.ibb.co/KzqK69HN/jyzt.jpg", 313: "https://i.ibb.co/RTD2JQsd/wwcxr.jpg", 314: "https://i.ibb.co/4wcGDBJG/ypsr.jpg", 315: "https://i.ibb.co/Q7svShjG/jypt.jpg",
-            409: "https://i.ibb.co/s9SvTzXY/yycd.jpg"
+        // 分类默认图
+        const categoryDefaults = {
+            "凉菜": "https://images.unsplash.com/photo-1608652763176-00c82325712a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+            "水产": "https://images.unsplash.com/photo-1598514983157-141707355786?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+            "肉食": "https://images.unsplash.com/photo-1608652763176-00c82325712a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+            "炒菜": "https://images.unsplash.com/photo-1616639923252-7010a1117067?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+            "蔬食": "https://images.unsplash.com/photo-1598514983157-141707355786?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+            "汤类": "https://images.unsplash.com/photo-1626109450480-1890764c7520?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+            "点心": "https://images.unsplash.com/photo-161130837777-080264212029?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+            "酒水": "https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
         };
 
         const menuData = [
-            { id: 101, category: "凉菜", name: "奥鹅", price: 88, desc: "一例" },
-            { id: 102, category: "凉菜", name: "酱鸭", price: 88, desc: "半只" },
-            { id: 103, category: "凉菜", name: "白斩鸡", price: 70, desc: "半只" },
-            { id: 104, category: "凉菜", name: "香酥鸭", price: 35, desc: "半只" },
-            { id: 105, category: "凉菜", name: "糖藕", price: 20, desc: "清脆爽口" },
-            { id: 106, category: "凉菜", name: "油爆小杂鱼", price: 20, desc: "香酥下酒" },
-            { id: 107, category: "凉菜", name: "白切肚条", price: 48, desc: "原汁原味" },
-            { id: 108, category: "凉菜", name: "酱牛肉", price: 48, desc: "酱香浓郁" },
-            { id: 109, category: "凉菜", name: "糟鸡爪", price: 25, desc: "酒香微醺" },
-            { id: 110, category: "凉菜", name: "马兰头拌香干", price: 15, desc: "田园风味" },
-            { id: 111, category: "凉菜", name: "莴笋丝", price: 12, desc: "清爽" },
-            { id: 112, category: "凉菜", name: "糟毛豆", price: 12, desc: "入味" },
-            { id: 113, category: "凉菜", name: "皮蛋豆腐", price: 12, desc: "经典凉拌" },
-            { id: 114, category: "凉菜", name: "拌黄瓜", price: 12, desc: "脆嫩" },
-            { id: 201, category: "水产", name: "甲鱼", price: 218, desc: "滋补圣品" },
-            { id: 202, category: "水产", name: "大肠烧鳗鱼", price: 198, desc: "浓油赤酱" },
-            { id: 203, category: "水产", name: "田鸡烧鳝筒", price: 98, desc: "双鲜合璧" },
-            { id: 204, category: "水产", name: "响油鳝丝", price: 88, desc: "苏帮名菜" },
-            { id: 205, category: "水产", name: "酸菜黑鱼片", price: 78, desc: "酸爽开胃" },
-            { id: 206, category: "水产", name: "白水鱼", price: 78, desc: "清蒸细嫩" },
-            { id: 207, category: "水产", name: "番茄鲈鱼片", price: 68, desc: "酸甜适口" },
-            { id: 208, category: "水产", name: "盐水河虾", price: 75, desc: "5两" },
-            { id: 209, category: "水产", name: "油爆河虾", price: 58, desc: "5两" },
-            { id: 210, category: "水产", name: "毛豆田鸡", price: 48, desc: "6只" },
-            { id: 211, category: "水产", name: "鳊鱼", price: 48, desc: "鲜美" },
-            { id: 212, category: "水产", name: "昂刺鱼", price: 45, desc: "3条" },
-            { id: 213, category: "水产", name: "爆炒螺蛳", price: 20, desc: "嘬味十足" },
-            { id: 214, category: "水产", name: "剁椒鱼头", price: 0, desc: "时价" },
-            { id: 215, category: "水产", name: "梭子蟹", price: 0, desc: "时价" },
-            { id: 301, category: "肉食", name: "麻鸭猪肚", price: 118, desc: "汤鲜味美" },
-            { id: 302, category: "肉食", name: "红烧鹅块", price: 88, desc: "入味劲道" },
-            { id: 303, category: "肉食", name: "鸭血大肠煲", price: 78, desc: "香辣过瘾" },
-            { id: 304, category: "肉食", name: "猪手鸡爪", price: 68, desc: "胶原蛋白" },
-            { id: 305, category: "肉食", name: "咸蹄膀", price: 68, desc: "咸香软烂" },
-            { id: 306, category: "肉食", name: "红烧鸡块", price: 48, desc: "家常风味" },
-            { id: 307, category: "肉食", name: "糖醋排骨", price: 48, desc: "酸甜酥嫩" },
-            { id: 308, category: "肉食", name: "鱼圆肉圆", price: 48, desc: "双圆组合" },
-            { id: 309, category: "肉食", name: "红烧肉", price: 58, desc: "肥而不腻" },
-            { id: 310, category: "肉食", name: "红烧猪手", price: 58, desc: "美容养颜" },
-            { id: 311, category: "肉食", name: "椒盐猪手", price: 58, desc: "外酥里嫩" },
-            { id: 313, category: "肉食", name: "娃娃菜咸肉", price: 58, desc: "鲜咸合一" },
-            { id: 314, category: "肉食", name: "笋干油泡塞肉", price: 38, desc: "吸汁入味" },
-            { id: 315, category: "肉食", name: "椒盐排条", price: 38, desc: "酥脆可口" },
+            // --- 凉菜 ---
+            { id: 101, category: "凉菜", name: "奥鹅", price: 88, desc: "一例", img: "https://i.ibb.co/BVmjNgvz/ae.jpg" },
+            { id: 102, category: "凉菜", name: "酱鸭", price: 88, desc: "半只", img: "https://i.ibb.co/ffYwPZ9/jy.jpg" },
+            { id: 103, category: "凉菜", name: "白斩鸡", price: 70, desc: "半只", img: "https://i.ibb.co/jZz31rVb/bzj.jpg" },
+            { id: 104, category: "凉菜", name: "香酥鸭", price: 35, desc: "半只", img: "https://i.ibb.co/0RjRgS7Z/xsy.jpg" },
+            { id: 105, category: "凉菜", name: "糖藕", price: 20, desc: "清脆爽口", img: "https://i.ibb.co/qLLLxCTT/to.jpg" },
+            { id: 106, category: "凉菜", name: "油爆小杂鱼", price: 20, desc: "香酥下酒", img: "https://i.ibb.co/KcFqfMLV/ybxzy.jpg" },
+            { id: 107, category: "凉菜", name: "白切肚条", price: 48, desc: "原汁原味", img: "https://i.ibb.co/9H9rKpBH/bqdt.jpg" },
+            { id: 108, category: "凉菜", name: "酱牛肉", price: 48, desc: "酱香浓郁", img: "https://i.ibb.co/279YpnPR/jnr.jpg" },
+            { id: 109, category: "凉菜", name: "糟鸡爪", price: 25, desc: "酒香微醺", img: "https://i.ibb.co/3YSSWKgw/zjz.jpg" },
+            { id: 110, category: "凉菜", name: "马兰头拌香干", price: 15, desc: "田园风味", img: "https://i.ibb.co/SwN6t73w/mltbxg.jpg" },
+            { id: 111, category: "凉菜", name: "莴笋丝", price: 12, desc: "清爽", img: "https://i.ibb.co/9HrRhY93/wss.jpg" },
+            { id: 112, category: "凉菜", name: "糟毛豆", price: 12, desc: "入味", img: "https://i.ibb.co/ymHz0vRh/zmd.webp" },
+            { id: 113, category: "凉菜", name: "皮蛋豆腐", price: 12, desc: "经典凉拌", img: "https://i.ibb.co/pv7XfkQZ/pddf.jpg" },
+            { id: 114, category: "凉菜", name: "拌黄瓜", price: 12, desc: "脆嫩", img: "https://i.ibb.co/NgD0B5f9/bhg.jpg" },
+            // --- 水产 ---
+            { id: 201, category: "水产", name: "甲鱼", price: 218, desc: "滋补圣品", img: "https://i.ibb.co/ksBwkHJB/hsjy.jpg" },
+            { id: 202, category: "水产", name: "大肠烧鳗鱼", price: 198, desc: "浓油赤酱", img: "https://i.ibb.co/Wps1KyF8/hsmy.jpg" },
+            { id: 203, category: "水产", name: "田鸡烧鳝筒", price: 98, desc: "双鲜合璧", img: "https://i.ibb.co/bMNYfMYm/hsst.jpg" },
+            { id: 204, category: "水产", name: "响油鳝丝", price: 88, desc: "苏帮名菜", img: "https://i.ibb.co/ZphwB0Sq/xyss.jpg" },
+            { id: 205, category: "水产", name: "酸菜黑鱼片", price: 78, desc: "酸爽开胃", img: "https://i.ibb.co/nW5bjH7/schyp.jpg" },
+            { id: 206, category: "水产", name: "白水鱼", price: 78, desc: "清蒸细嫩", img: "https://i.ibb.co/zVt0L3f1/bsy.jpg" },
+            { id: 207, category: "水产", name: "番茄鲈鱼片", price: 68, desc: "酸甜适口", img: "https://i.ibb.co/j9BzXJcW/fqlyp.jpg" },
+            { id: 208, category: "水产", name: "盐水河虾", price: 75, desc: "5两", img: "https://i.ibb.co/jvjrdT6q/ysx.jpg" },
+            { id: 209, category: "水产", name: "油爆河虾", price: 58, desc: "5两", img: "https://i.ibb.co/hxKHp9Jv/ybhx.jpg" },
+            { id: 210, category: "水产", name: "毛豆田鸡", price: 48, desc: "6只", img: "https://i.ibb.co/cSH667bX/mdtj.jpg" },
+            { id: 211, category: "水产", name: "鳊鱼", price: 48, desc: "鲜美", img: "https://i.ibb.co/ynV3TMtH/hsby.png" },
+            { id: 212, category: "水产", name: "昂刺鱼", price: 45, desc: "3条", img: "https://i.ibb.co/RkLYwxtx/acydft.jpg" },
+            { id: 213, category: "水产", name: "爆炒螺蛳", price: 20, desc: "嘬味十足", img: "https://i.ibb.co/jvvzw1LW/bcls.jpg" },
+            { id: 214, category: "水产", name: "剁椒鱼头", price: 0, desc: "时价", img: "https://i.ibb.co/TxGK30RY/djyt.jpg" },
+            { id: 215, category: "水产", name: "梭子蟹", price: 0, desc: "时价", img: "https://i.ibb.co/QSB89XF/szx.jpg" },
+            // --- 肉食 ---
+            { id: 301, category: "肉食", name: "麻鸭猪肚", price: 118, desc: "汤鲜味美", img: "https://i.ibb.co/dNKZ3tn/hsmy.jpg" },
+            { id: 302, category: "肉食", name: "红烧鹅块", price: 88, desc: "入味劲道", img: "https://i.ibb.co/yF0LxZ2s/hsek.jpg" },
+            { id: 303, category: "肉食", name: "鸭血大肠煲", price: 78, desc: "香辣过瘾", img: "https://i.ibb.co/BHnSWnf4/yxdcb.jpg" },
+            { id: 304, category: "肉食", name: "猪手鸡爪", price: 68, desc: "胶原蛋白", img: "https://i.ibb.co/HDRc8FMQ/hsrjz.jpg" },
+            { id: 305, category: "肉食", name: "咸蹄膀", price: 68, desc: "咸香软烂", img: "https://i.ibb.co/C5DW6KTV/jyxt.jpg" },
+            { id: 306, category: "肉食", name: "红烧鸡块", price: 48, desc: "家常风味", img: "https://i.ibb.co/8njdzbXv/hsjk.jpg" },
+            { id: 307, category: "肉食", name: "糖醋排骨", price: 48, desc: "酸甜酥嫩", img: "https://i.ibb.co/jZgmR4nR/tcpg.jpg" },
+            { id: 308, category: "肉食", name: "鱼圆肉圆", price: 48, desc: "双圆组合", img: "https://i.ibb.co/LXG2McCp/yy.jpg" },
+            { id: 309, category: "肉食", name: "红烧肉", price: 58, desc: "肥而不腻", img: "https://i.ibb.co/9FYc16D/hsr.jpg" },
+            { id: 310, category: "肉食", name: "红烧猪手", price: 58, desc: "美容养颜", img: "https://i.ibb.co/xKDs5ncm/hszs.jpg" },
+            { id: 311, category: "肉食", name: "椒盐猪手", price: 58, desc: "外酥里嫩", img: "https://i.ibb.co/KzqK69HN/jyzt.jpg" },
+            { id: 313, category: "肉食", name: "娃娃菜咸肉", price: 58, desc: "鲜咸合一", img: "https://i.ibb.co/RTD2JQsd/wwcxr.jpg" },
+            { id: 314, category: "肉食", name: "笋干油泡塞肉", price: 38, desc: "吸汁入味", img: "https://i.ibb.co/4wcGDBJG/ypsr.jpg" },
+            { id: 315, category: "肉食", name: "椒盐排条", price: 38, desc: "酥脆可口", img: "https://i.ibb.co/Q7svShjG/jypt.jpg" },
+            // --- 炒菜 ---
             { id: 401, category: "炒菜", name: "腰花猪肝冬笋", price: 58, desc: "三鲜爆炒" },
             { id: 402, category: "炒菜", name: "酸菜肚片", price: 48, desc: "爽脆" },
             { id: 403, category: "炒菜", name: "青椒肚片", price: 48, desc: "微辣" },
@@ -507,7 +484,7 @@
             { id: 406, category: "炒菜", name: "洋葱小肠", price: 48, desc: "干香" },
             { id: 407, category: "炒菜", name: "咸菜小肠", price: 48, desc: "下饭" },
             { id: 408, category: "炒菜", name: "酱爆猪肝", price: 28, desc: "嫩滑" },
-            { id: 409, category: "炒菜", name: "银鱼炒蛋", price: 28, desc: "鲜嫩" },
+            { id: 409, category: "炒菜", name: "银鱼炒蛋", price: 28, desc: "鲜嫩", img: "https://i.ibb.co/s9SvTzXY/yycd.jpg" },
             { id: 410, category: "炒菜", name: "银鱼蛋饼", price: 28, desc: "香酥" },
             { id: 411, category: "炒菜", name: "蒜苗牛肉丝", price: 38, desc: "经典搭配" },
             { id: 412, category: "炒菜", name: "青椒牛肉丝", price: 38, desc: "家常快手" },
@@ -534,6 +511,7 @@
             { id: 433, category: "炒菜", name: "麻婆豆腐", price: 18, desc: "麻辣鲜香" },
             { id: 434, category: "炒菜", name: "酸辣土豆丝", price: 16, desc: "开胃" },
             { id: 435, category: "炒菜", name: "番茄炒蛋", price: 15, desc: "国民菜" },
+            // --- 蔬食 ---
             { id: 501, category: "蔬食", name: "丝瓜毛豆", price: 25, desc: "清甜" },
             { id: 502, category: "蔬食", name: "丝瓜炒蛋", price: 25, desc: "滑嫩" },
             { id: 503, category: "蔬食", name: "丝瓜面筋", price: 25, desc: "吸汁" },
@@ -550,6 +528,7 @@
             { id: 514, category: "蔬食", name: "葱油蚕豆", price: 30, desc: "春味" },
             { id: 515, category: "蔬食", name: "咸菜豆瓣", price: 30, desc: "鲜香" },
             { id: 516, category: "蔬食", name: "豆瓣炒蛋", price: 30, desc: "鲜嫩" },
+            // --- 汤类 ---
             { id: 601, category: "汤类", name: "老鸭汤", price: 188, desc: "滋阴补肺" },
             { id: 602, category: "汤类", name: "老母鸡汤", price: 158, desc: "元气满满" },
             { id: 603, category: "汤类", name: "排骨汤", price: 48, desc: "清润" },
@@ -559,11 +538,13 @@
             { id: 607, category: "汤类", name: "榨菜肉丝汤", price: 18, desc: "开胃" },
             { id: 608, category: "汤类", name: "番茄蛋汤", price: 15, desc: "酸甜" },
             { id: 609, category: "汤类", name: "紫菜蛋汤", price: 15, desc: "鲜美" },
+            // --- 点心 ---
             { id: 701, category: "点心", name: "荠菜猪肉水饺", price: 30, desc: "手工现包" },
             { id: 702, category: "点心", name: "荠菜猪肉馄饨", price: 30, desc: "皮薄馅大" },
             { id: 703, category: "点心", name: "红汤面", price: 20, desc: "苏式风味" },
             { id: 704, category: "点心", name: "红糖发糕", price: 20, desc: "松软香甜" },
             { id: 705, category: "点心", name: "野菜踏饼", price: 10, desc: "4只" },
+            // --- 酒水 ---
             { id: 801, category: "酒水", name: "椰奶(大)", price: 18, desc: "饮料 大瓶" },
             { id: 802, category: "酒水", name: "橙汁", price: 12, desc: "饮料 大瓶" },
             { id: 803, category: "酒水", name: "可乐(大)", price: 10, desc: "饮料 大瓶" },
@@ -591,10 +572,11 @@
 
         let cart = [];
 
+        // 初始化图片：如果菜品没设图片，使用分类默认图
         menuData.forEach(item => {
-            const specificImg = imgMap[item.id];
-            const categoryImg = imgMap[`category_${item.category}`];
-            item.img = (specificImg && specificImg.trim() !== "") ? specificImg : (categoryImg || "");
+            if (!item.img || item.img.trim() === "") {
+                item.img = categoryDefaults[item.category] || "";
+            }
         });
 
         function formatPrice(price) { return price === 0 ? "时价" : `¥${price}`; }
@@ -715,11 +697,31 @@
             if (noteInput.trim()) { noteContainer.classList.remove('hidden'); noteDisplay.innerText = noteInput; } else { noteContainer.classList.add('hidden'); }
         }
 
-        function printOrder() { window.print(); }
+        // ==========================================
+        // 修改点：保存订单为图片
+        // ==========================================
+        function saveOrderImage() {
+            const receipt = document.getElementById('receipt-card');
+            showToast("正在生成高清订单图片...");
+            
+            html2canvas(receipt, {
+                backgroundColor: "#fdfbf7",
+                scale: 3, // 高清倍率
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                const timestamp = new Date().getTime();
+                link.download = `稻田边订单-${timestamp}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                showToast("保存成功");
+            }).catch(err => {
+                console.error(err);
+                showToast("生成失败，请尝试手动截图");
+            });
+        }
 
-        // ==========================================
-        // 修改点：使用稳健的复制方案 (兼容 iFrame/App 环境)
-        // ==========================================
         function copyOrderText() {
             const table = document.getElementById('input-table').value || "未填写";
             const note = document.getElementById('input-note').value || "无";
@@ -738,10 +740,8 @@
             text += `💰 总计: ${total}\n`;
             text += `📝 备注: ${note}`;
 
-            // 稳健方案：通过创建隐藏 textarea 复制
             const textArea = document.createElement("textarea");
             textArea.value = text;
-            // 确保不影响页面布局
             textArea.style.position = "fixed";
             textArea.style.left = "-9999px";
             textArea.style.top = "0";
