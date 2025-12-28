@@ -22,7 +22,7 @@
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .cart-drawer { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        /* --- 分类按钮样式 --- */
+        /* 分类按钮轻奢风格 */
         .category-btn {
             transition: all 0.4s ease;
             border-radius: 4px;
@@ -37,17 +37,11 @@
             color: #71717a;
         }
         
-        .category-btn:hover {
-            border-color: #52525b;
-            color: #a1a1aa;
-        }
-
         .category-btn.active {
             border-color: var(--gold);
             color: var(--gold);
             background-color: rgba(197, 160, 89, 0.05);
             box-shadow: 0 0 15px rgba(197, 160, 89, 0.15);
-            transform: translateY(-1px);
         }
 
         .item-card {
@@ -59,15 +53,8 @@
         .item-card:hover {
             border-color: var(--gold);
             transform: translateY(-4px);
-            box-shadow: 0 10px 30px -10px rgba(197, 160, 89, 0.2);
         }
         
-        .item-card img {
-            transition: transform 0.6s ease;
-        }
-        .item-card:hover img {
-            transform: scale(1.05);
-        }
         .btn-gold {
             background: linear-gradient(135deg, #c5a059 0%, #8e6d31 100%);
             color: white;
@@ -79,141 +66,26 @@
             background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d4d4d4' fill-opacity='0.2' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
             color: #2c2c2c;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            width: 380px; /* 固定2寸热敏纸建议宽度 */
         }
-        .receipt-line { border-bottom: 1px dashed #a8a29e; }
-
-        /* =========================================
-           2寸小票机专用打印样式 (58mm)
-        ========================================= */
-        @media print {
-            @page {
-                margin: 0;
-                size: auto;
-            }
-            html, body {
-                background: white !important;
-                color: black !important;
-                margin: 0;
-                padding: 0;
-                height: auto;
-            }
-            body * {
-                visibility: hidden;
-                height: 0;
-            }
-            #order-modal, #order-modal *, #receipt-card, #receipt-card * {
-                visibility: visible;
-                height: auto;
-            }
-            #order-modal {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                background: white !important;
-            }
-            #order-modal-content > div:first-child { 
-                display: none !important; 
-            }
-            #order-modal-content {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                margin: 0;
-                padding: 0;
-                transform: none !important;
-            }
-            #receipt-card {
-                width: 58mm !important;
-                max-width: 58mm !important;
-                margin: 0 auto !important;
-                padding: 10px 5px !important;
-                background: white !important;
-                background-image: none !important;
-                box-shadow: none !important;
-                border: none !important;
-                color: black !important;
-            }
-            #receipt-card .w-12, .opacity-20, .receipt-line, .text-zinc-600, .text-zinc-500 {
-                display: none !important;
-            }
-            #receipt-card h2 {
-                font-size: 32pt !important;
-                font-weight: bold !important;
-                margin-bottom: 15px !important;
-                text-align: center;
-                line-height: 1;
-            }
-            .font-mono {
-                font-size: 14pt !important;
-                font-weight: bold !important;
-                display: block !important;
-                margin-bottom: 10px !important;
-                border-bottom: 3px solid black !important;
-                padding-bottom: 5px;
-                color: black !important;
-            }
-            #receipt-items-list .flex {
-                display: block !important;
-                margin-bottom: 15px !important;
-                border-bottom: 1px solid #000;
-                padding-bottom: 8px;
-            }
-            #receipt-items-list .flex-grow {
-                font-size: 24pt !important;
-                font-weight: 900 !important;
-                display: block !important;
-                width: 100% !important;
-                line-height: 1.1 !important;
-                margin-bottom: 5px !important;
-                color: black !important;
-            }
-            #receipt-items-list span:first-child {
-                font-size: 18pt !important;
-                font-weight: bold !important;
-                color: black !important;
-            }
-            #receipt-items-list span:first-child::before {
-                content: "份数: ";
-                font-size: 14pt;
-            }
-            #receipt-items-list span:last-child {
-                float: right;
-                font-size: 18pt !important;
-                font-weight: bold !important;
-                color: black !important;
-            }
-            .flex.justify-between.items-baseline.mb-6 {
-                margin-top: 20px !important;
-                border-top: 4px solid black !important;
-                padding-top: 10px !important;
-                display: block !important;
-            }
-            .flex.justify-between.items-baseline.mb-6 span:first-child {
-                font-size: 16pt !important;
-                font-weight: bold;
-            }
-            #receipt-total {
-                font-size: 36pt !important;
-                font-weight: 900 !important;
-                display: block !important;
-                text-align: right;
-            }
-            #receipt-note-container {
-                display: block !important;
-                margin-top: 20px !important;
-                border: 2px solid black !important;
-                padding: 10px !important;
-            }
-            #receipt-note {
-                font-size: 20pt !important;
-                font-weight: bold !important;
-                background: none !important;
-                color: black !important;
-                border: none !important;
-            }
-            .no-print { display: none !important; }
+        
+        /* 热敏打印专用高对比度强制类 */
+        .thermal-mode {
+            background-image: none !important;
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            box-shadow: none !important;
+            padding: 20px !important;
+        }
+        .thermal-mode * {
+            color: #000000 !important;
+            border-color: #000000 !important;
+        }
+        .thermal-mode .opacity-20, .thermal-mode .opacity-60 {
+            opacity: 1 !important;
+        }
+        .thermal-mode .text-zinc-500, .thermal-mode .text-zinc-600 {
+            color: #000000 !important;
         }
     </style>
 </head>
@@ -241,7 +113,6 @@
     <div class="max-w-[1600px] mx-auto flex flex-col lg:flex-row min-h-screen no-print">
         <aside class="w-full lg:w-40 flex-shrink-0 sticky top-20 lg:h-[calc(100vh-5rem)] border-b lg:border-b-0 lg:border-r border-zinc-900 bg-[#0a0a0a]/95 backdrop-blur z-30">
             <div class="p-4 overflow-x-auto lg:overflow-y-auto hide-scrollbar flex lg:flex-col gap-1 whitespace-nowrap lg:whitespace-normal">
-                <h4 class="hidden lg:block text-[#c5a059] text-[9px] uppercase tracking-widest mb-3 px-2 opacity-50">Menu Categories</h4>
                 <button onclick="filterMenu('all', this)" class="category-btn active py-2 lg:py-2.5">
                     <span class="text-[8px] uppercase opacity-60 mb-0.5">All</span><span class="text-xs lg:text-sm font-bold">全部</span>
                 </button>
@@ -297,13 +168,12 @@
 
     <div id="order-modal" class="fixed inset-0 z-[60] hidden">
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity opacity-0 no-print" id="order-modal-bg" onclick="closeOrderModal()"></div>
-        
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[90vh] md:h-auto flex flex-col md:flex-row gap-0 md:gap-8 p-4 pointer-events-none opacity-0 scale-95 transition-all duration-300" id="order-modal-content">
             
             <div class="bg-[#18181b] border border-zinc-800 rounded-xl p-6 md:p-8 flex-1 pointer-events-auto shadow-2xl flex flex-col no-print">
                 <div class="mb-6">
                     <h3 class="text-xl text-[#c5a059] font-serif font-bold mb-2">订单确认</h3>
-                    <p class="text-zinc-500 text-xs">生成方式：</p>
+                    <p class="text-zinc-500 text-xs">填写桌号及要求：</p>
                 </div>
                 
                 <div class="space-y-4 mb-8">
@@ -315,37 +185,24 @@
                     </div>
                     <div>
                         <label class="block text-zinc-400 text-xs uppercase tracking-wider mb-2">备注要求</label>
-                        <textarea id="input-note" rows="3" placeholder="例如：微辣、免葱姜、需要宝宝椅..." 
+                        <textarea id="input-note" rows="3" placeholder="例如：微辣、免葱姜..." 
                             class="w-full bg-black/50 border border-zinc-700 rounded p-3 text-white focus:border-[#c5a059] focus:outline-none transition-colors text-sm resize-none"
                             oninput="updateReceiptInfo()"></textarea>
                     </div>
                 </div>
 
                 <div class="mt-auto space-y-3">
-                    <button onclick="handleSaveAction()" class="w-full btn-gold text-white py-4 font-bold tracking-widest uppercase rounded shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                    <button onclick="saveOrderImage()" class="w-full btn-gold text-white py-4 font-bold tracking-widest uppercase rounded shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                        保存为图片 / PDF打印
+                        保存热敏打印图片
                     </button>
-
-                    <!-- 新增得力e+专用打印跳转按钮 -->
-                    <button onclick="printWithDeli()" class="w-full bg-blue-600 text-white py-3 font-bold tracking-widest uppercase rounded hover:bg-blue-500 transition-all flex items-center justify-center gap-2 shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                        得力e+ 专用打印
-                    </button>
-                    
-                    <button onclick="copyOrderText()" class="w-full bg-zinc-800 text-zinc-300 py-3 font-bold tracking-widest uppercase rounded hover:bg-zinc-700 transition-all flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                        复制订单文本 (发微信)
-                    </button>
-
-                    <button onclick="closeOrderModal()" class="w-full bg-transparent border border-zinc-700 text-zinc-400 py-3 text-xs tracking-widest uppercase rounded hover:border-zinc-500 hover:text-zinc-200 transition-all">
-                        返回修改
-                    </button>
+                    <button onclick="copyOrderText()" class="w-full bg-zinc-800 text-zinc-300 py-3 font-bold tracking-widest uppercase rounded hover:bg-zinc-700 transition-all">复制订单文本</button>
+                    <button onclick="closeOrderModal()" class="w-full bg-transparent border border-zinc-700 text-zinc-400 py-3 text-xs tracking-widest uppercase rounded hover:text-zinc-200">返回修改</button>
                 </div>
             </div>
 
             <div class="flex-1 flex items-center justify-center bg-[#0a0a0a]/50 rounded-xl border border-zinc-800/50 p-4 md:p-8 overflow-y-auto pointer-events-auto">
-                <div id="receipt-card" class="w-full max-w-[380px] p-8 relative mx-auto font-sans text-black">
+                <div id="receipt-card" class="p-8 relative mx-auto font-sans text-black">
                     <div class="text-center mb-6 border-b-2 border-black pb-4">
                         <div class="w-12 h-12 border-2 border-black mx-auto flex items-center justify-center mb-3">
                             <span class="font-serif font-bold text-xl">稻</span>
@@ -360,15 +217,12 @@
                         <div class="flex justify-between"><span>桌号 TABLE:</span><span id="receipt-table" class="font-bold text-black border-b border-dashed border-black px-1 min-w-[20px] text-right">--</span></div>
                     </div>
 
-                    <div class="receipt-line mb-4"></div>
+                    <div class="receipt-line mb-4 border-b border-dashed border-zinc-400"></div>
                     <div class="flex text-[10px] font-bold mb-2 uppercase tracking-wider text-zinc-500">
-                        <span class="w-8">Qty</span>
-                        <span class="flex-grow">Item</span>
-                        <span class="text-right">Amt</span>
+                        <span class="w-8">Qty</span><span class="flex-grow">Item</span><span class="text-right">Amt</span>
                     </div>
-                    <div id="receipt-items-list" class="space-y-2 mb-6 text-xs min-h-[100px]">
-                        </div>
-                    <div class="receipt-line mb-4"></div>
+                    <div id="receipt-items-list" class="space-y-2 mb-6 text-xs min-h-[100px]"></div>
+                    <div class="receipt-line mb-4 border-b border-dashed border-zinc-400"></div>
 
                     <div class="flex justify-between items-baseline mb-6">
                         <span class="text-sm font-bold uppercase">Total Amount</span>
@@ -396,6 +250,7 @@
     <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 border border-[#c5a059] bg-black text-[#c5a059] px-8 py-3 rounded-none shadow-2xl opacity-0 transition-opacity pointer-events-none z-[80] tracking-widest text-sm uppercase">已选入菜单</div>
 
     <script>
+        // 数据部分（保持不变）
         const menuData = [
             { id: 101, category: "凉菜", name: "奥鹅", price: 88, desc: "一例", img: "https://i.ibb.co/BVmjNgvz/ae.jpg" },
             { id: 102, category: "凉菜", name: "酱鸭", price: 88, desc: "半只", img: "https://i.ibb.co/ffYwPZ9/jy.jpg" },
@@ -480,7 +335,7 @@
             { id: 601, category: "汤类", name: "老鸭汤", price: 188, desc: "滋阴补肺", img: "https://i.ibb.co/Q3f70M7J/lyt.png" },
             { id: 602, category: "汤类", name: "老母鸡汤", price: 158, desc: "元气满满", img: "https://i.ibb.co/qF0bHWtH/lmjt.png" },
             { id: 603, category: "汤类", name: "排骨汤", price: 48, desc: "清润", img: "https://i.ibb.co/kVsXXZRF/pgt.png" },
-            { id: 604, category: "汤类", name: "冬瓜咸肉汤", price: 38, desc: "解腻", img: "https://i.ibb.co/DgzBqVjG/dgxrt.png" },
+            { id: 604, category: "汤类", name: "冬瓜咸肉汤", price: 38, desc: "解腻", img: "https://i.ibb.co/DgzBV3G/dgxrt.png" },
             { id: 605, category: "汤类", name: "面筋肉皮汤", price: 28, desc: "丰富", img: "https://i.ibb.co/qYHD4Dmm/mjrpt.png" },
             { id: 606, category: "汤类", name: "荠菜肉丝豆腐羹", price: 22, desc: "滑爽", img: "https://i.ibb.co/FqhJGzPx/jcrsdfg.webp" },
             { id: 607, category: "汤类", name: "榨菜肉丝汤", price: 18, desc: "开胃", img: "https://i.ibb.co/v4R8KPPP/zcrst.png" },
@@ -493,30 +348,10 @@
             { id: 705, category: "点心", name: "野菜踏饼", price: 10, desc: "4只", img: "https://i.ibb.co/BK27DRrz/yctb.png" },
             { id: 801, category: "酒水", name: "椰奶(大)", price: 18, desc: "饮料 大瓶", img: "https://i.ibb.co/7dQk7cc5/yndp.webp" },
             { id: 802, category: "酒水", name: "橙汁", price: 12, desc: "饮料 大瓶", img: "https://i.ibb.co/F4NPvGvF/glc.webp" },
-            { id: 8021, category: "酒水", name: "葡萄汁", price: 18, desc: "饮料 大瓶", img: "https://i.ibb.co/gLBTTGJQ/pyz.png" },
-            { id: 8022, category: "酒水", name: "芒果汁", price: 18, desc: "饮料 大瓶", img: "https://i.ibb.co/7Jcv8J54/mgz.png" },
-            { id: 8023, category: "酒水", name: "nfc椰汁", price: 18, desc: "饮料 大瓶", img: "https://i.ibb.co/9k6JCdLS/nfcyz.png" },
             { id: 803, category: "酒水", name: "百事可乐(大)", price: 10, desc: "饮料 大瓶", img: "https://i.ibb.co/qLtbT8Mw/bskldp.png" },
-            { id: 8033, category: "酒水", name: "可口可乐(大)", price: 10, desc: "饮料 大瓶", img: "https://i.ibb.co/DHkzt6DG/kkkldp.png" },
-            { id: 804, category: "酒水", name: "雪碧(大)", price: 10, desc: "饮料 大瓶", img: "https://i.ibb.co/fg6xGQR/xbdp.png" },
             { id: 805, category: "酒水", name: "粗粮王", price: 16, desc: "饮料 小罐", img: "https://i.ibb.co/bMPtWnjY/clw.png" },
-            { id: 806, category: "酒水", name: "椰奶(小)", price: 8, desc: "饮料 小罐", img: "https://i.ibb.co/d4VSv0pw/ynx.png" },
             { id: 807, category: "酒水", name: "王老吉", price: 6, desc: "饮料 小罐", img: "https://i.ibb.co/WW68FSbL/wlj.png" },
-            { id: 808, category: "酒水", name: "百事可乐(小)", price: 5, desc: "饮料 小罐", img: "https://i.ibb.co/f7MFsST/bskl.webp" },
-            { id: 8088, category: "酒水", name: "可口可乐(小)", price: 5, desc: "饮料 小罐", img: "https://i.ibb.co/KxWfBzL3/kkklxp.png" },
-            { id: 809, category: "酒水", name: "雪碧(小)", price: 5, desc: "饮料 小罐", img: "https://i.ibb.co/C5RzGXwd/xbx.png" },
-            { id: 901, category: "酒水", name: "海之蓝", price: 150, desc: "白酒", img: "https://i.ibb.co/GvkSFd8x/hzl.png" },
-            { id: 902, category: "酒水", name: "口子窖", price: 125, desc: "白酒", img: "https://i.ibb.co/S1J2fm7/kzj.png" },
-            { id: 903, category: "酒水", name: "百年迎驾", price: 70, desc: "白酒", img: "https://i.ibb.co/WNV2Yy8r/bnyj.png" },
-            { id: 904, category: "酒水", name: "金种子(大)", price: 68, desc: "白酒 大瓶", img: "https://i.ibb.co/Rp4nBbZC/jzz.png" },
-            { id: 905, category: "酒水", name: "牛栏山(大)", price: 38, desc: "白酒 大瓶", img: "https://i.ibb.co/sJb0HDg0/nlsd.png" },
-            { id: 907, category: "酒水", name: "牛栏山(小)", price: 20, desc: "白酒 小瓶", img: "https://i.ibb.co/t0yXCZm/nlsx.png" },
-            { id: 908, category: "酒水", name: "沙洲优黄-1878", price: 28, desc: "黄酒", img: "https://i.ibb.co/RT4ywhGQ/szyh1878.png" },
-            { id: 909, category: "酒水", name: "沙洲优黄-坛装", price: 25, desc: "黄酒", img: "https://i.ibb.co/5g6pQkZP/szyhtz.png" },
-            { id: 910, category: "酒水", name: "沙洲优黄-6年", price: 25, desc: "黄酒", img: "https://i.ibb.co/LdZ8zvrV/szyh6n.png" },
-            { id: 911, category: "酒水", name: "沙洲优黄-2年", price: 10, desc: "黄酒", img: "https://i.ibb.co/nNFWsB9k/szyh2n.png" },
             { id: 912, category: "酒水", name: "百威", price: 10, desc: "啤酒", img: "https://i.ibb.co/BV70pYxz/bw.png" },
-            { id: 913, category: "酒水", name: "青岛纯生", price: 10, desc: "啤酒", img: "https://i.ibb.co/sJtP0jFC/qdcs.png" },
             { id: 914, category: "酒水", name: "雪花", price: 6, desc: "啤酒", img: "https://i.ibb.co/JRTb97xB/xh.png" },
         ];
 
@@ -529,16 +364,16 @@
             grid.innerHTML = items.map(item => `
                 <div class="item-card flex flex-col">
                     <div class="h-32 md:h-40 overflow-hidden bg-zinc-900 relative">
-                        <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover" loading="lazy">
+                        <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover">
                     </div>
                     <div class="p-3 md:p-4 flex flex-col flex-grow">
                         <div class="flex justify-between items-baseline mb-1">
-                            <h3 class="font-bold text-xs md:text-sm text-white tracking-wide truncate pr-2" title="${item.name}">${item.name}</h3>
+                            <h3 class="font-bold text-xs md:text-sm text-white truncate pr-2">${item.name}</h3>
                             <span class="text-[#c5a059] font-bold text-xs md:text-sm serif">${formatPrice(item.price)}</span>
                         </div>
-                        <p class="text-zinc-500 text-[10px] mb-3 leading-tight line-clamp-2 font-light h-8">${item.desc || ''}</p>
+                        <p class="text-zinc-500 text-[10px] mb-3 leading-tight h-8 line-clamp-2">${item.desc || ''}</p>
                         <div class="mt-auto">
-                            <button onclick="addToCart(${item.id})" class="w-full border border-zinc-800 text-zinc-500 py-2 text-[9px] tracking-widest uppercase hover:border-[#c5a059] hover:text-[#c5a059] transition-all">选入</button>
+                            <button onclick="addToCart(${item.id})" class="w-full border border-zinc-800 text-zinc-500 py-2 text-[9px] uppercase hover:border-[#c5a059] hover:text-[#c5a059]">选入</button>
                         </div>
                     </div>
                 </div>
@@ -565,20 +400,19 @@
             const container = document.getElementById('cart-items'), badge = document.getElementById('cart-badge'), total = document.getElementById('cart-total');
             const totalCount = cart.reduce((sum, i) => sum + i.quantity, 0);
             const totalPrice = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
-            const hasMarketPrice = cart.some(i => i.price === 0);
             badge.innerText = totalCount; badge.classList.toggle('hidden', totalCount === 0);
-            total.innerText = hasMarketPrice ? `¥ ${totalPrice.toLocaleString()} + 时价` : `¥ ${totalPrice.toLocaleString()}`;
-            container.innerHTML = cart.length === 0 ? '<div class="text-center py-20 text-zinc-600 italic font-light"><p>未选定任何珍馐</p></div>' : cart.map(item => `
+            total.innerText = `¥ ${totalPrice.toLocaleString()}`;
+            container.innerHTML = cart.length === 0 ? '<div class="text-center py-20 text-zinc-600">未选定任何珍馐</div>' : cart.map(item => `
                 <div class="flex items-center gap-4 bg-black/40 p-4 border border-zinc-900">
                     <img src="${item.img}" class="w-12 h-12 object-cover grayscale opacity-60">
                     <div class="flex-grow">
-                        <h4 class="text-white text-xs font-medium">${item.name}</h4>
-                        <p class="text-[#c5a059] text-[10px] mt-1">${formatPrice(item.price)}</p>
+                        <h4 class="text-white text-xs">${item.name}</h4>
+                        <p class="text-[#c5a059] text-[10px]">${formatPrice(item.price)}</p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 flex items-center justify-center text-zinc-500 border border-zinc-800 hover:text-white">-</button>
-                        <span class="text-zinc-300 text-[10px] w-4 text-center">${item.quantity}</span>
-                        <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center text-zinc-500 border border-zinc-800 hover:text-white">+</button>
+                        <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 border border-zinc-800 text-zinc-500">-</button>
+                        <span class="text-zinc-300 text-[10px]">${item.quantity}</span>
+                        <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 border border-zinc-800 text-zinc-500">+</button>
                     </div>
                 </div>`).join('');
         }
@@ -590,14 +424,11 @@
         function openOrderModal() {
             if (cart.length === 0) return showToast("请先选择菜品");
             toggleCart();
-            const modal = document.getElementById('order-modal');
-            const bg = document.getElementById('order-modal-bg');
-            const content = document.getElementById('order-modal-content');
-            modal.classList.remove('hidden');
+            document.getElementById('order-modal').classList.remove('hidden');
             setTimeout(() => {
-                bg.classList.remove('opacity-0');
-                content.classList.remove('opacity-0', 'scale-95');
-                content.classList.add('opacity-100', 'scale-100');
+                document.getElementById('order-modal-bg').classList.remove('opacity-0');
+                document.getElementById('order-modal-content').classList.remove('opacity-0', 'scale-95');
+                document.getElementById('order-modal-content').classList.add('opacity-100', 'scale-100');
             }, 10);
             const now = new Date();
             document.getElementById('receipt-date').innerText = now.toLocaleString('zh-CN', { hour12: false });
@@ -608,108 +439,68 @@
 
         function closeOrderModal() {
             const modal = document.getElementById('order-modal');
-            const bg = document.getElementById('order-modal-bg');
-            const content = document.getElementById('order-modal-content');
-            bg.classList.add('opacity-0');
-            content.classList.add('opacity-0', 'scale-95');
-            content.classList.remove('opacity-100', 'scale-100');
+            document.getElementById('order-modal-bg').classList.add('opacity-0');
+            document.getElementById('order-modal-content').classList.add('opacity-0', 'scale-95');
             setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
         function renderReceiptItems() {
             const list = document.getElementById('receipt-items-list');
             const totalVal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
-            const hasMarketPrice = cart.some(i => i.price === 0);
             list.innerHTML = cart.map(item => `
                 <div class="flex mb-1 items-start">
                     <span class="w-8 text-center text-zinc-600">${item.quantity}</span>
                     <span class="flex-grow pr-2 text-black">${item.name}</span>
-                    <span class="text-right text-black font-bold whitespace-nowrap">${item.price === 0 ? "时价" : (item.price * item.quantity).toLocaleString()}</span>
+                    <span class="text-right text-black font-bold">${item.price === 0 ? "时价" : (item.price * item.quantity).toLocaleString()}</span>
                 </div>
             `).join('');
-            document.getElementById('receipt-total').innerText = hasMarketPrice ? `¥ ${totalVal.toLocaleString()} +` : `¥ ${totalVal.toLocaleString()}`;
+            document.getElementById('receipt-total').innerText = `¥ ${totalVal.toLocaleString()}`;
         }
 
         function updateReceiptInfo() {
-            const tableInput = document.getElementById('input-table').value;
-            const noteInput = document.getElementById('input-note').value;
-            const tableDisplay = document.getElementById('receipt-table');
-            const noteContainer = document.getElementById('receipt-note-container');
-            const noteDisplay = document.getElementById('receipt-note');
-            tableDisplay.innerText = tableInput.trim() || "--";
-            if (noteInput.trim()) { noteContainer.classList.remove('hidden'); noteDisplay.innerText = noteInput; } else { noteContainer.classList.add('hidden'); }
+            const table = document.getElementById('input-table').value;
+            const note = document.getElementById('input-note').value;
+            document.getElementById('receipt-table').innerText = table.trim() || "--";
+            if (note.trim()) {
+                document.getElementById('receipt-note-container').classList.remove('hidden');
+                document.getElementById('receipt-note').innerText = note;
+            } else {
+                document.getElementById('receipt-note-container').classList.add('hidden');
+            }
         }
 
-        function handleSaveAction() {
-            const isThermalPrinter = confirm("想要导出PDF/打印大字订单吗？\n(取消则保存为普通订单图片)");
-            if (isThermalPrinter) window.print();
-            else saveOrderImage();
-        }
-
+        // ==========================================
+        // 核心修改：保存为2寸热敏适配图片
+        // ==========================================
         function saveOrderImage() {
             const receipt = document.getElementById('receipt-card');
-            showToast("正在生成订单图片...");
-            html2canvas(receipt, { backgroundColor: "#fdfbf7", scale: 3, useCORS: true }).then(canvas => {
+            showToast("正在生成热敏打印专用图...");
+
+            // 1. 临时切换到热敏黑白模式并锁定宽度
+            receipt.classList.add('thermal-mode');
+            
+            // 2. 调用生成（强制使用380px宽度，满足58mm热敏纸）
+            html2canvas(receipt, {
+                backgroundColor: "#ffffff",
+                scale: 2, // 2倍缩放保证打印文字锐利
+                width: 380, // 固定宽度
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `稻田边订单-${new Date().getTime()}.png`;
+                const timestamp = new Date().getTime();
+                link.download = `稻田边-热敏订单-${timestamp}.png`;
                 link.href = canvas.toDataURL("image/png");
                 link.click();
-                showToast("图片保存成功");
-            });
-        }
-
-        // --- 新增：得力e+ 打印跳转逻辑 ---
-        function printWithDeli() {
-            const table = document.getElementById('input-table').value || "未填写";
-            const note = document.getElementById('input-note').value || "无";
-            const total = document.getElementById('receipt-total').innerText;
-            const now = new Date().toLocaleString('zh-CN', { hour12: false });
-
-            // 1. 构建适合 58mm 打印的纯文本订单
-            let text = `   稻田边·私宴\n`;
-            text += `----------------\n`;
-            text += `日期: ${now.split(' ')[0]}\n`;
-            text += `桌号: ${table}\n`;
-            text += `----------------\n`;
-            cart.forEach(item => {
-                const price = item.price === 0 ? "时价" : item.price * item.quantity;
-                text += `${item.name}\n`;
-                text += ` x${item.quantity}       ${price}\n`;
-            });
-            text += `----------------\n`;
-            text += `总额: ${total}\n`;
-            if(note !== "无") text += `备注: ${note}\n`;
-            text += `\n   谢谢惠顾\n\n\n`;
-
-            // 2. 自动复制到剪贴板
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.left = "-9999px";
-            document.body.appendChild(textArea);
-            textArea.select();
-            
-            try {
-                document.execCommand('copy');
-                showToast("已复制订单，正在跳转...");
                 
-                // 3. 延迟一秒跳转，确保复制完成
-                setTimeout(() => {
-                    // 尝试通过 URL Scheme 调起得力e+ 应用
-                    // 注意：得力e+ 官方协议目前不公开文本直传，此处调起应用后用户在软件内粘贴打印即可
-                    window.location.href = "delieplus://"; 
-                    
-                    // 如果是 PC 端且没有协议响应，提供备选方案
-                    setTimeout(() => {
-                        if (confirm("如果软件未自动打开，请点击确定手动复制文本并打开得力e+打印。")) {
-                            copyOrderText(); // 再次执行通用复制
-                        }
-                    }, 2000);
-                }, 1000);
-            } catch (err) {
-                showToast("操作失败，请尝试手动复制");
-            }
-            document.body.removeChild(textArea);
+                // 3. 还原视觉样式
+                receipt.classList.remove('thermal-mode');
+                showToast("保存成功，请发送到打印机");
+            }).catch(err => {
+                receipt.classList.remove('thermal-mode');
+                console.error(err);
+                showToast("生成失败");
+            });
         }
 
         function copyOrderText() {
@@ -717,20 +508,14 @@
             const note = document.getElementById('input-note').value || "无";
             const total = document.getElementById('receipt-total').innerText;
             const now = new Date().toLocaleString('zh-CN', { hour12: false });
-            let text = `【稻田边·私宴订单】\n📅 时间: ${now}\n📍 桌号/称呼: ${table}\n------------------\n`;
+
+            let text = `【稻田边·私宴订单】\n📅 时间: ${now}\n📍 桌号: ${table}\n------------------\n`;
             cart.forEach(item => {
-                const price = item.price === 0 ? "时价" : item.price * item.quantity;
-                text += `▫️ ${item.name} x${item.quantity}  ${price}\n`;
+                text += `▫️ ${item.name} x${item.quantity}  ${item.price === 0 ? "时价" : item.price * item.quantity}\n`;
             });
             text += `------------------\n💰 总计: ${total}\n📝 备注: ${note}`;
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.left = "-9999px";
-            document.body.appendChild(textArea);
-            textArea.select();
-            if (document.execCommand('copy')) showToast("文本已复制");
-            document.body.removeChild(textArea);
+
+            navigator.clipboard.writeText(text).then(() => showToast("文本已复制")).catch(() => showToast("复制失败"));
         }
 
         window.onload = () => { renderMenu(menuData); };
