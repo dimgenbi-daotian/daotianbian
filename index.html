@@ -70,45 +70,94 @@
         }
         
         /* =========================================
-           保存图片时的优化排版 (热敏增强模式)
+           保存图片时的增强排版 (完全解决重叠)
         ========================================= */
         .thermal-mode {
             background-image: none !important;
             background-color: #ffffff !important;
             color: #000000 !important;
             box-shadow: none !important;
-            padding: 15px !important;
+            padding: 25px 20px !important;
             width: 380px !important;
+            display: block !important;
+            height: auto !important;
         }
         .thermal-mode * {
             color: #000000 !important;
             border-color: #000000 !important;
+            position: static !important; /* 取消所有元素的相对/绝对定位，强制流式布局 */
         }
-        /* 头部排版优化 */
-        .thermal-mode h2 { font-size: 56px !important; margin-top: 10px !important; margin-bottom: 5px !important; text-align: center; }
-        .thermal-mode p { font-size: 20px !important; text-align: center; }
-        /* 基础信息栏 */
-        .thermal-mode .font-mono { font-size: 22px !important; line-height: 1.6 !important; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 10px; }
-        /* 列表排版优化：左中右对齐 */
+        /* 标题区独立 */
+        .thermal-mode h2 { font-size: 56px !important; margin: 15px 0 10px !important; text-align: center; font-weight: 900 !important; line-height: 1.1 !important; }
+        .thermal-mode p { font-size: 20px !important; text-align: center; margin-bottom: 20px !important; }
+        
+        /* 基础信息栏区隔 */
+        .thermal-mode .font-mono { 
+            font-size: 22px !important; 
+            line-height: 1.8 !important; 
+            border-bottom: 3px solid #000 !important; 
+            padding-bottom: 10px !important; 
+            margin-bottom: 20px !important; 
+            display: block !important;
+        }
+        
+        /* 列表排版：使用标准块布局防止重叠 */
         .thermal-mode #receipt-items-list div { 
-            font-size: 28px !important; 
-            margin-bottom: 12px !important; 
+            font-size: 30px !important; 
+            margin-bottom: 18px !important; 
             line-height: 1.3 !important; 
             display: flex !important;
+            justify-content: space-between !important;
             align-items: flex-start !important;
+            width: 100% !important;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 5px;
         }
-        .thermal-mode #receipt-items-list .w-8 { width: 45px !important; text-align: left !important; font-weight: bold; }
-        /* 分隔线加粗 */
-        .thermal-mode .receipt-line { border-bottom: 4px solid #000 !important; margin: 15px 0 !important; }
-        /* 总计栏极大化 */
-        .thermal-mode #receipt-total { font-size: 72px !important; font-weight: 900 !important; }
-        .thermal-mode .text-sm.font-bold { font-size: 26px !important; }
-        /* 备注栏优化 */
-        .thermal-mode #receipt-note-container p:first-child { font-size: 22px !important; margin-bottom: 5px !important; }
-        .thermal-mode #receipt-note { font-size: 26px !important; border: 3px solid #000 !important; background: none !important; padding: 12px !important; }
-        /* 确认章增强 */
-        .thermal-mode .seal-badge { opacity: 0.9 !important; border-width: 6px !important; right: 20px !important; bottom: 40px !important; width: 110px !important; height: 110px !important; }
-        .thermal-mode .seal-badge span { font-size: 16px !important; }
+        .thermal-mode #receipt-items-list .w-8 { width: 50px !important; text-align: left !important; font-weight: bold; }
+        .thermal-mode #receipt-items-list .flex-grow { flex: 1 !important; padding: 0 10px !important; white-space: normal !important; word-wrap: break-word !important; }
+        .thermal-mode #receipt-items-list .text-right { text-align: right !important; font-weight: bold; }
+
+        /* 分隔线强化 */
+        .thermal-mode .receipt-line { border-bottom: 5px solid #000 !important; margin: 25px 0 !important; height: 0 !important; display: block !important; }
+        
+        /* 总计区独立防止重叠 */
+        .thermal-mode .flex.justify-between.items-baseline { 
+            display: flex !important; 
+            flex-direction: column !important; 
+            align-items: flex-end !important;
+            margin-top: 20px !important;
+            margin-bottom: 30px !important;
+        }
+        .thermal-mode .text-sm.font-bold { font-size: 28px !important; margin-bottom: 10px !important; align-self: flex-start !important; }
+        .thermal-mode #receipt-total { font-size: 80px !important; font-weight: 900 !important; line-height: 1 !important; margin-top: 5px !important; }
+
+        /* 备注栏完全独立 */
+        .thermal-mode #receipt-note-container { margin-top: 30px !important; display: block !important; }
+        .thermal-mode #receipt-note-container p:first-child { font-size: 24px !important; font-weight: bold !important; margin-bottom: 10px !important; }
+        .thermal-mode #receipt-note { 
+            font-size: 28px !important; 
+            border: 4px solid #000 !important; 
+            background: none !important; 
+            padding: 15px !important; 
+            line-height: 1.4 !important;
+            display: block !important;
+        }
+        
+        /* 确认章：移至文末，不再悬浮重叠 */
+        .thermal-mode .seal-badge { 
+            display: flex !important;
+            margin: 50px auto 20px !important; 
+            opacity: 1 !important; 
+            border: 6px solid #000 !important; 
+            width: 140px !important; 
+            height: 140px !important; 
+            border-radius: 50% !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transform: rotate(-5deg) !important;
+        }
+        .thermal-mode .seal-badge span { font-size: 20px !important; font-weight: 900 !important; }
+        .thermal-mode .text-center.space-y-2 { margin-top: 30px !important; }
     </style>
 </head>
 <body class="selection:bg-[#c5a059]/30">
@@ -218,16 +267,11 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                         保存订单
                     </button>
-                    <!-- 新增保存为Word选项 -->
-                    <button onclick="exportToWord()" class="w-full bg-zinc-800 text-zinc-300 py-3 font-bold tracking-widest uppercase rounded hover:bg-zinc-700 transition-all flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                        保存为Word
-                    </button>
                     <button onclick="copyOrderText()" class="w-full bg-zinc-800 text-zinc-300 py-3 font-bold tracking-widest uppercase rounded hover:bg-zinc-700 transition-all flex items-center justify-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
                         复制订单文本
                     </button>
-                    <button onclick="closeOrderModal()" class="w-full bg-transparent border border-zinc-700 text-zinc-400 py-3 text-xs tracking-widest uppercase rounded hover:text-zinc-200">返回修改</button>
+                    <button onclick="closeOrderModal()" class="w-full bg-transparent border border-zinc-700 text-zinc-400 py-3 text-xs tracking-widest uppercase rounded hover:border-zinc-500 transition-all">返回修改</button>
                 </div>
             </div>
 
@@ -280,9 +324,8 @@
     <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 border border-[#c5a059] bg-black text-[#c5a059] px-8 py-3 rounded-none shadow-2xl opacity-0 transition-opacity pointer-events-none z-[80] tracking-widest text-sm uppercase">已选入菜单</div>
 
     <script>
-        // 完整菜单数据
+        // 恢复完整菜单数据
         const menuData = [
-            // --- 凉菜 ---
             { id: 101, category: "凉菜", name: "奥鹅", price: 88, desc: "一例", img: "https://i.ibb.co/BVmjNgvz/ae.jpg" },
             { id: 102, category: "凉菜", name: "酱鸭", price: 88, desc: "半只", img: "https://i.ibb.co/ffYwPZ9/jy.jpg" },
             { id: 103, category: "凉菜", name: "白斩鸡", price: 70, desc: "半只", img: "https://i.ibb.co/jZz31rVb/bzj.jpg" },
@@ -297,7 +340,6 @@
             { id: 112, category: "凉菜", name: "糟毛豆", price: 12, desc: "入味", img: "https://i.ibb.co/ymHz0vRh/zmd.webp" },
             { id: 113, category: "凉菜", name: "皮蛋豆腐", price: 12, desc: "经典凉拌", img: "https://i.ibb.co/pv7XfkQZ/pddf.jpg" },
             { id: 114, category: "凉菜", name: "拌黄瓜", price: 12, desc: "脆嫩", img: "https://i.ibb.co/NgD0B5f9/bhg.jpg" },
-            // --- 水产 ---
             { id: 201, category: "水产", name: "甲鱼", price: 218, desc: "滋补圣品", img: "https://i.ibb.co/ksBwkHJB/hsjy.jpg" },
             { id: 202, category: "水产", name: "大肠烧鳗鱼", price: 198, desc: "浓油赤酱", img: "https://i.ibb.co/Wps1KyF8/hsmy.jpg" },
             { id: 203, category: "水产", name: "田鸡烧鳝筒", price: 98, desc: "双鲜合璧", img: "https://i.ibb.co/bMNYfMYm/hsst.jpg" },
@@ -313,7 +355,6 @@
             { id: 213, category: "水产", name: "爆炒螺蛳", price: 20, desc: "嘬味十足", img: "https://i.ibb.co/jvvzw1LW/bcls.jpg" },
             { id: 214, category: "水产", name: "剁椒鱼头", price: 0, desc: "时价", img: "https://i.ibb.co/TxGK30RY/djyt.jpg" },
             { id: 215, category: "水产", name: "梭子蟹", price: 0, desc: "时价", img: "https://i.ibb.co/QSB89XF/szx.jpg" },
-            // --- 肉食 ---
             { id: 301, category: "肉食", name: "麻鸭猪肚", price: 118, desc: "汤鲜味美", img: "https://i.ibb.co/dNKZ3tn/hsmy.jpg" },
             { id: 302, category: "肉食", name: "红烧鹅块", price: 88, desc: "入味劲道", img: "https://i.ibb.co/yF0LxZ2s/hsek.jpg" },
             { id: 303, category: "肉食", name: "鸭血大肠煲", price: 78, desc: "香辣过瘾", img: "https://i.ibb.co/BHnSWnf4/yxdcb.jpg" },
@@ -328,7 +369,6 @@
             { id: 313, category: "肉食", name: "娃娃菜咸肉", price: 58, desc: "鲜咸合一", img: "https://i.ibb.co/RTD2JQsd/wwcxr.jpg" },
             { id: 314, category: "肉食", name: "笋干油泡塞肉", price: 38, desc: "吸汁入味", img: "https://i.ibb.co/4wcGDBJG/ypsr.jpg" },
             { id: 315, category: "肉食", name: "椒盐排条", price: 38, desc: "酥脆可口", img: "https://i.ibb.co/Q7svShjG/jypt.jpg" },
-            // --- 炒菜 ---
             { id: 402, category: "炒菜", name: "酸菜肚片", price: 48, desc: "爽脆", img: "https://i.ibb.co/VpbL4CsY/scdp.png" },
             { id: 403, category: "炒菜", name: "青椒肚片", price: 48, desc: "微辣", img: "https://i.ibb.co/35z2Tx4S/qjdp.jpg" },
             { id: 405, category: "炒菜", name: "土豆蒸咸肉", price: 48, desc: "咸香软糯", img: "https://i.ibb.co/HfcVHKSN/tdzxr.jpg" },
@@ -357,7 +397,6 @@
             { id: 433, category: "炒菜", name: "麻婆豆腐", price: 18, desc: "麻辣鲜香", img: "https://i.ibb.co/3ynTxWg6/mpdf.webp" },
             { id: 434, category: "炒菜", name: "酸辣土豆丝", price: 16, desc: "开胃", img: "https://i.ibb.co/WvdgWL5M/sltds.png" },
             { id: 435, category: "炒菜", name: "番茄炒蛋", price: 15, desc: "国民菜", img: "https://i.ibb.co/twnc7Z0M/fqcd.png" },
-            // --- 蔬食 ---
             { id: 504, category: "蔬食", name: "酒香草头", price: 25, desc: "清香", img: "https://i.ibb.co/B5hWsyYq/jxct.png" },
             { id: 509, category: "蔬食", name: "油焖茄子", price: 20, desc: "软烂入味", img: "https://i.ibb.co/rfw1J6CQ/ymqz.webp" },
             { id: 510, category: "蔬食", name: "空心菜", price: 18, desc: "清炒", img: "https://i.ibb.co/BVhZ6hY0/kxc.png" },
@@ -367,7 +406,6 @@
             { id: 514, category: "蔬食", name: "葱油蚕豆", price: 30, desc: "春味", img: "https://i.ibb.co/Kj1FTXCZ/cycd.webp" },
             { id: 515, category: "蔬食", name: "咸菜豆瓣", price: 30, desc: "鲜香", img: "https://i.ibb.co/rKvfbCzz/xcdb.webp" },
             { id: 516, category: "蔬食", name: "豆瓣炒蛋", price: 30, desc: "鲜嫩", img: "https://i.ibb.co/HppJ3J1n/dbcd.webp" },
-            // --- 汤类 ---
             { id: 601, category: "汤类", name: "老鸭汤", price: 188, desc: "滋阴补肺", img: "https://i.ibb.co/Q3f70M7J/lyt.png" },
             { id: 602, category: "汤类", name: "老母鸡汤", price: 158, desc: "元气满满", img: "https://i.ibb.co/qF0bHWtH/lmjt.png" },
             { id: 603, category: "汤类", name: "排骨汤", price: 48, desc: "清润", img: "https://i.ibb.co/kVsXXZRF/pgt.png" },
@@ -377,13 +415,11 @@
             { id: 607, category: "汤类", name: "榨菜肉丝汤", price: 18, desc: "开胃", img: "https://i.ibb.co/v4R8KPPP/zcrst.png" },
             { id: 608, category: "汤类", name: "番茄蛋汤", price: 15, desc: "酸甜", img: "https://i.ibb.co/qLySxhnz/fqdt.png" },
             { id: 609, category: "汤类", name: "紫菜蛋汤", price: 15, desc: "鲜美", img: "https://i.ibb.co/3Y9x1977/zcdt.webp" },
-            // --- 点心 ---
             { id: 701, category: "点心", name: "荠菜猪肉水饺", price: 30, desc: "手工现包", img: "https://i.ibb.co/Ng06bWSQ/jczrsj.webp" },
             { id: 702, category: "点心", name: "荠菜猪肉馄饨", price: 30, desc: "皮薄馅大", img: "https://i.ibb.co/BK7cMvsK/jczrht.png" },
             { id: 703, category: "点心", name: "红汤面", price: 20, desc: "苏式风味", img: "https://i.ibb.co/qLwvV3s4/htm.png" },
             { id: 704, category: "点心", name: "红糖发糕", price: 20, desc: "松软香甜", img: "https://i.ibb.co/r2MkxXYS/htfg.png" },
             { id: 705, category: "点心", name: "野菜踏饼", price: 10, desc: "4只", img: "https://i.ibb.co/BK27DRrz/yctb.png" },
-            // --- 酒水 ---
             { id: 801, category: "酒水", name: "椰奶(大)", price: 18, desc: "饮料 大瓶", img: "https://i.ibb.co/7dQk7cc5/yndp.webp" },
             { id: 802, category: "酒水", name: "橙汁", price: 12, desc: "饮料 大瓶", img: "https://i.ibb.co/F4NPvGvF/glc.webp" },
             { id: 803, category: "酒水", name: "百事可乐(大)", price: 10, desc: "饮料 大瓶", img: "https://i.ibb.co/qLtbT8Mw/bskldp.png" },
@@ -521,19 +557,28 @@
         function saveOrderImage() {
             const receipt = document.getElementById('receipt-card');
             showToast("正在保存订单图片...");
+            
+            // 激活增强排版
             receipt.classList.add('thermal-mode');
+            
             html2canvas(receipt, {
                 backgroundColor: "#ffffff",
                 scale: 3, 
                 width: 380,
                 useCORS: true,
-                logging: false
+                logging: false,
+                onclone: (clonedDoc) => {
+                    // 确保克隆出的 DOM 也应用了 thermal-mode 类
+                    const clonedReceipt = clonedDoc.getElementById('receipt-card');
+                    clonedReceipt.classList.add('thermal-mode');
+                }
             }).then(canvas => {
                 const link = document.createElement('a');
                 const timestamp = new Date().getTime();
                 link.download = `稻田边订单-${timestamp}.png`;
-                link.href = canvas.toToDataURL ? canvas.toDataURL("image/png") : canvas.toDataURL();
+                link.href = canvas.toDataURL("image/png");
                 link.click();
+                
                 receipt.classList.remove('thermal-mode');
                 showToast("订单图片已保存");
             }).catch(err => {
@@ -541,89 +586,6 @@
                 console.error(err);
                 showToast("保存失败");
             });
-        }
-
-        // ==========================================
-        // 核心修改：导出为Word文档
-        // ==========================================
-        function exportToWord() {
-            const table = document.getElementById('input-table').value || "未填写";
-            const note = document.getElementById('input-note').value || "无";
-            const total = document.getElementById('receipt-total').innerText;
-            const now = new Date().toLocaleString('zh-CN', { hour12: false });
-            const orderId = document.getElementById('receipt-id').innerText;
-
-            let content = `
-                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                <head><meta charset='utf-8'><title>稻田边·私宴订单</title>
-                <style>
-                    body { font-family: "SimSun", "serif"; line-height: 1.5; padding: 20px; }
-                    h1 { text-align: center; color: #333; font-size: 24pt; margin-bottom: 5px; }
-                    .subtitle { text-align: center; color: #c5a059; font-size: 10pt; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
-                    .info-box { border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-                    .info-box p { margin: 5px 0; font-size: 11pt; }
-                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                    th { border-bottom: 2px solid #333; padding: 10px; text-align: left; font-size: 12pt; background-color: #f9f9f9; }
-                    td { border-bottom: 1px solid #eee; padding: 10px; font-size: 11pt; }
-                    .total-row { margin-top: 30px; text-align: right; border-top: 2px solid #333; padding-top: 15px; }
-                    .total-row span { font-size: 18pt; font-weight: bold; color: #c5a059; }
-                    .remarks { margin-top: 40px; background-color: #f5f5f5; padding: 15px; border-left: 5px solid #c5a059; }
-                    .footer { margin-top: 50px; text-align: center; color: #888; font-size: 9pt; font-style: italic; }
-                </style>
-                </head>
-                <body>
-                    <h1>稻田边·私宴</h1>
-                    <div class="subtitle">AUTHENTIC PRIVATE CUISINE</div>
-                    
-                    <div class="info-box">
-                        <p><b>订单编号：</b>${orderId}</p>
-                        <p><b>预定日期：</b>${now}</p>
-                        <p><b>桌号称呼：</b>${table}</p>
-                    </div>
-
-                    <table>
-                        <thead>
-                            <tr>
-                                <th width="10%">数量</th>
-                                <th width="60%">菜品明细</th>
-                                <th width="30%" align="right">金额</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${cart.map(item => `
-                                <tr>
-                                    <td>${item.quantity}</td>
-                                    <td>${item.name}</td>
-                                    <td align="right">${item.price === 0 ? "时价" : (item.price * item.quantity).toLocaleString()}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-
-                    <div class="total-row">
-                        <b>费用总计：</b><span>${total}</span>
-                    </div>
-
-                    <div class="remarks">
-                        <b>备注要求：</b><br/>
-                        ${note}
-                    </div>
-
-                    <div class="footer">
-                        不时不食，馈于席上。每一道菜都是对土地最真诚的礼赞。<br/>
-                        稻田边·私宴 敬启
-                    </div>
-                </body>
-                </html>
-            `;
-
-            const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `稻田边订单-${table.replace(/\s+/g, '_')}.doc`;
-            link.click();
-            URL.revokeObjectURL(link.href);
-            showToast("Word文档已下载");
         }
 
         function copyOrderText() {
