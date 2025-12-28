@@ -22,7 +22,7 @@
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .cart-drawer { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        /* --- 分类按钮轻奢风格重写 --- */
+        /* --- 分类按钮样式 --- */
         .category-btn {
             transition: all 0.4s ease;
             border-radius: 4px;
@@ -83,160 +83,161 @@
         .receipt-line { border-bottom: 1px dashed #a8a29e; }
 
         /* =========================================
-           2寸小票机专用打印样式 (58mm)
+           2寸小票机专用打印样式 (58mm) - 已根据需求修改
         ========================================= */
         @media print {
             @page {
                 margin: 0;
                 size: auto;
             }
-            body {
+            html, body {
+                background: white !important;
+                color: black !important;
                 margin: 0;
                 padding: 0;
-                background: white;
+                height: auto;
             }
+            /* 隐藏页面上所有非打印元素 */
             body * {
                 visibility: hidden;
                 height: 0;
-                overflow: hidden;
             }
-
-            #order-modal, #order-modal-content, #receipt-card, #receipt-card * {
+            /* 仅显示模态框中的小票卡片 */
+            #order-modal, #order-modal *, #receipt-card, #receipt-card * {
                 visibility: visible;
                 height: auto;
-                overflow: visible;
             }
-
             #order-modal {
                 position: absolute;
                 left: 0;
                 top: 0;
                 width: 100%;
-                background: white;
-                z-index: 9999;
+                background: white !important;
             }
+            /* 隐藏左侧输入表单 */
+            #order-modal-content > div:first-child { 
+                display: none !important; 
+            }
+            /* 强制全屏显示小票 */
             #order-modal-content {
+                position: absolute;
+                left: 0;
+                top: 0;
                 width: 100%;
                 margin: 0;
                 padding: 0;
-            }
-
-            #order-modal-content > div:first-child { 
-                display: none; 
-            }
-
-            #order-modal-content > div:last-child {
-                border: none;
-                background: white;
-                padding: 0;
-                display: block;
+                transform: none !important;
             }
             
             #receipt-card {
-                box-shadow: none;
-                margin: 0;
-                width: 100% !important;
-                max-width: 100% !important;
-                padding: 5px 0 !important;
+                width: 58mm !important; /* 2寸纸张标准宽度 */
+                max-width: 58mm !important;
+                margin: 0 auto !important;
+                padding: 10px 5px !important;
                 background: white !important;
+                background-image: none !important;
+                box-shadow: none !important;
+                border: none !important;
                 color: black !important;
             }
 
+            /* 隐藏装饰性元素 */
             #receipt-card .w-12, 
             .opacity-20, 
             .receipt-line, 
-            .text-zinc-600 {
+            .text-zinc-600,
+            .text-zinc-500 {
                 display: none !important;
             }
             
+            /* 标题超大字 */
             #receipt-card h2 {
-                font-size: 32px !important;
-                font-weight: 900 !important;
-                margin-bottom: 5px !important;
+                font-size: 32pt !important;
+                font-weight: bold !important;
+                margin-bottom: 15px !important;
                 text-align: center;
-                line-height: 1.1;
+                line-height: 1;
             }
 
+            /* 信息栏文字加大 */
             .font-mono {
-                font-size: 18px !important;
+                font-size: 14pt !important;
                 font-weight: bold !important;
                 display: block !important;
-                margin-bottom: 5px !important;
-                border-bottom: 2px solid black !important;
+                margin-bottom: 10px !important;
+                border-bottom: 3px solid black !important;
                 padding-bottom: 5px;
+                color: black !important;
             }
             
-            #receipt-card .uppercase.tracking-wider.text-zinc-500 {
-                display: none !important;
-            }
-
+            /* 菜品列表布局重组为“大字模式” */
             #receipt-items-list .flex {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                margin-bottom: 12px !important;
-                border-bottom: 1px dashed #000;
-                padding-bottom: 5px;
-                position: relative;
-                align-items: baseline !important;
+                display: block !important; /* 强制纵向排列防止横向挤压 */
+                margin-bottom: 15px !important;
+                border-bottom: 1px solid #000;
+                padding-bottom: 8px;
             }
 
+            /* 菜名超大 */
             #receipt-items-list .flex-grow {
-                order: 1 !important;
-                width: 100% !important;
-                font-size: 24px !important;
+                font-size: 24pt !important;
                 font-weight: 900 !important;
-                line-height: 1.2 !important;
-                margin-bottom: 4px !important;
-                white-space: normal !important;
+                display: block !important;
+                width: 100% !important;
+                line-height: 1.1 !important;
+                margin-bottom: 5px !important;
+                color: black !important;
             }
 
+            /* 数量和价格 */
             #receipt-items-list span:first-child {
-                order: 2 !important;
-                font-size: 20px !important;
+                font-size: 18pt !important;
                 font-weight: bold !important;
-                width: auto !important;
-                text-align: left !important;
-                margin-right: 10px !important;
+                color: black !important;
             }
             #receipt-items-list span:first-child::before {
-                content: "x ";
-                font-size: 16px;
+                content: "份数: ";
+                font-size: 14pt;
             }
 
             #receipt-items-list span:last-child {
-                order: 3 !important;
-                margin-left: auto !important;
-                font-size: 20px !important;
+                float: right;
+                font-size: 18pt !important;
                 font-weight: bold !important;
+                color: black !important;
             }
 
+            /* 总额栏优化 */
             .flex.justify-between.items-baseline.mb-6 {
-                margin-top: 10px !important;
+                margin-top: 20px !important;
+                border-top: 4px solid black !important;
+                padding-top: 10px !important;
                 display: block !important;
-                text-align: right !important;
-                border-top: 3px solid black !important;
-                padding-top: 5px !important;
             }
             .flex.justify-between.items-baseline.mb-6 span:first-child {
-                font-size: 20px !important;
-                float: left;
+                font-size: 16pt !important;
+                font-weight: bold;
             }
             #receipt-total {
-                font-size: 42px !important;
+                font-size: 36pt !important;
                 font-weight: 900 !important;
                 display: block !important;
+                text-align: right;
             }
 
+            /* 备注栏优化 */
             #receipt-note-container {
                 display: block !important;
-                margin-top: 15px !important;
+                margin-top: 20px !important;
+                border: 2px solid black !important;
+                padding: 10px !important;
             }
             #receipt-note {
-                font-size: 22px !important;
+                font-size: 20pt !important;
                 font-weight: bold !important;
                 background: none !important;
-                border: 3px solid black !important;
-                padding: 5px !important;
+                color: black !important;
+                border: none !important;
             }
             
             .no-print { display: none !important; }
@@ -348,9 +349,9 @@
                 </div>
 
                 <div class="mt-auto space-y-3">
-                    <button onclick="saveOrderImage()" class="w-full btn-gold text-white py-4 font-bold tracking-widest uppercase rounded shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                    <button onclick="handleSaveAction()" class="w-full btn-gold text-white py-4 font-bold tracking-widest uppercase rounded shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                        保存订单图片
+                        保存为图片 / PDF打印
                     </button>
                     
                     <button onclick="copyOrderText()" class="w-full bg-zinc-800 text-zinc-300 py-3 font-bold tracking-widest uppercase rounded hover:bg-zinc-700 transition-all flex items-center justify-center gap-2">
@@ -416,20 +417,7 @@
     <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 border border-[#c5a059] bg-black text-[#c5a059] px-8 py-3 rounded-none shadow-2xl opacity-0 transition-opacity pointer-events-none z-[80] tracking-widest text-sm uppercase">已选入菜单</div>
 
     <script>
-        // 分类默认图
-        const categoryDefaults = {
-            "凉菜": "https://images.unsplash.com/photo-1608652763176-00c82325712a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "水产": "https://images.unsplash.com/photo-1598514983157-141707355786?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "肉食": "https://images.unsplash.com/photo-1608652763176-00c82325712a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "炒菜": "https://images.unsplash.com/photo-1616639923252-7010a1117067?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "蔬食": "https://images.unsplash.com/photo-1598514983157-141707355786?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "汤类": "https://images.unsplash.com/photo-1626109450480-1890764c7520?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "点心": "https://images.unsplash.com/photo-161130837777-080264212029?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "酒水": "https://images.unsplash.com/photo-1544145945-f90425340c7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-        };
-
         const menuData = [
-            // --- 凉菜 ---
             { id: 101, category: "凉菜", name: "奥鹅", price: 88, desc: "一例", img: "https://i.ibb.co/BVmjNgvz/ae.jpg" },
             { id: 102, category: "凉菜", name: "酱鸭", price: 88, desc: "半只", img: "https://i.ibb.co/ffYwPZ9/jy.jpg" },
             { id: 103, category: "凉菜", name: "白斩鸡", price: 70, desc: "半只", img: "https://i.ibb.co/jZz31rVb/bzj.jpg" },
@@ -444,7 +432,6 @@
             { id: 112, category: "凉菜", name: "糟毛豆", price: 12, desc: "入味", img: "https://i.ibb.co/ymHz0vRh/zmd.webp" },
             { id: 113, category: "凉菜", name: "皮蛋豆腐", price: 12, desc: "经典凉拌", img: "https://i.ibb.co/pv7XfkQZ/pddf.jpg" },
             { id: 114, category: "凉菜", name: "拌黄瓜", price: 12, desc: "脆嫩", img: "https://i.ibb.co/NgD0B5f9/bhg.jpg" },
-            // --- 水产 ---
             { id: 201, category: "水产", name: "甲鱼", price: 218, desc: "滋补圣品", img: "https://i.ibb.co/ksBwkHJB/hsjy.jpg" },
             { id: 202, category: "水产", name: "大肠烧鳗鱼", price: 198, desc: "浓油赤酱", img: "https://i.ibb.co/Wps1KyF8/hsmy.jpg" },
             { id: 203, category: "水产", name: "田鸡烧鳝筒", price: 98, desc: "双鲜合璧", img: "https://i.ibb.co/bMNYfMYm/hsst.jpg" },
@@ -460,7 +447,6 @@
             { id: 213, category: "水产", name: "爆炒螺蛳", price: 20, desc: "嘬味十足", img: "https://i.ibb.co/jvvzw1LW/bcls.jpg" },
             { id: 214, category: "水产", name: "剁椒鱼头", price: 0, desc: "时价", img: "https://i.ibb.co/TxGK30RY/djyt.jpg" },
             { id: 215, category: "水产", name: "梭子蟹", price: 0, desc: "时价", img: "https://i.ibb.co/QSB89XF/szx.jpg" },
-            // --- 肉食 ---
             { id: 301, category: "肉食", name: "麻鸭猪肚", price: 118, desc: "汤鲜味美", img: "https://i.ibb.co/dNKZ3tn/hsmy.jpg" },
             { id: 302, category: "肉食", name: "红烧鹅块", price: 88, desc: "入味劲道", img: "https://i.ibb.co/yF0LxZ2s/hsek.jpg" },
             { id: 303, category: "肉食", name: "鸭血大肠煲", price: 78, desc: "香辣过瘾", img: "https://i.ibb.co/BHnSWnf4/yxdcb.jpg" },
@@ -475,11 +461,8 @@
             { id: 313, category: "肉食", name: "娃娃菜咸肉", price: 58, desc: "鲜咸合一", img: "https://i.ibb.co/RTD2JQsd/wwcxr.jpg" },
             { id: 314, category: "肉食", name: "笋干油泡塞肉", price: 38, desc: "吸汁入味", img: "https://i.ibb.co/4wcGDBJG/ypsr.jpg" },
             { id: 315, category: "肉食", name: "椒盐排条", price: 38, desc: "酥脆可口", img: "https://i.ibb.co/Q7svShjG/jypt.jpg" },
-            // --- 炒菜 ---
-           // { id: 401, category: "炒菜", name: "腰花猪肝冬笋", price: 58, desc: "三鲜爆炒", img: "https://i.ibb.co/Q7svShjG/jypt.jpg" },
             { id: 402, category: "炒菜", name: "酸菜肚片", price: 48, desc: "爽脆", img: "https://i.ibb.co/VpbL4CsY/scdp.png" },
             { id: 403, category: "炒菜", name: "青椒肚片", price: 48, desc: "微辣", img: "https://i.ibb.co/35z2Tx4S/qjdp.jpg" },
-          //  { id: 404, category: "炒菜", name: "西兰花虾仁", price: 48, desc: "清淡营养", img: "https://i.ibb.co/Q7svShjG/jypt.jpg" },
             { id: 405, category: "炒菜", name: "土豆蒸咸肉", price: 48, desc: "咸香软糯", img: "https://i.ibb.co/HfcVHKSN/tdzxr.jpg" },
             { id: 406, category: "炒菜", name: "洋葱小肠", price: 48, desc: "干香", img: "https://i.ibb.co/qMngb936/hsxc.png" },
             { id: 407, category: "炒菜", name: "咸菜小肠", price: 48, desc: "下饭", img: "https://i.ibb.co/zVKvSfbk/xcxc.webp" },
@@ -492,34 +475,21 @@
             { id: 414, category: "炒菜", name: "菱白毛豆", price: 25, desc: "时令蔬菜", img: "https://i.ibb.co/Mxk7zc21/lbmd.webp" },
             { id: 415, category: "炒菜", name: "双菇肉片", price: 25, desc: "菌菇鲜美", img: "https://i.ibb.co/gMMBmr81/sgrp.webp" },
             { id: 416, category: "炒菜", name: "山药木耳肉片", price: 25, desc: "养生清炒", img: "https://i.ibb.co/67m7TjR2/symerp.webp" },
-           // { id: 417, category: "炒菜", name: "豆瓣蘑菇", price: 28, desc: "素鲜", img: "https://i.ibb.co/Q7svShjG/jypt.jpg" },
-           // { id: 418, category: "炒菜", name: "炒三鲜", price: 25, desc: "丰富口感", img: "https://i.ibb.co/Q7svShjG/jypt.jpg" },
-            //{ id: 419, category: "炒菜", name: "山药毛豆榨菜", price: 28, desc: "脆嫩爽口", img: "https://i.ibb.co/Q7svShjG/jypt.jpg" },
             { id: 420, category: "炒菜", name: "油豆腐", price: 25, desc: "吸汁", img: "https://i.ibb.co/N6zjYGz6/ydf.png" },
             { id: 421, category: "炒菜", name: "肉末粉皮煲", price: 28, desc: "滑溜", img: "https://i.ibb.co/XrGLmhQb/rmfpb.png" },
             { id: 422, category: "炒菜", name: "芹菜肉丝", price: 22, desc: "清香", img: "https://i.ibb.co/GQrhhFG4/qcrs.png" },
             { id: 423, category: "炒菜", name: "肉末莴笋丝", price: 25, desc: "脆嫩", img: "https://i.ibb.co/DffnBx57/rmwss.png" },
             { id: 424, category: "炒菜", name: "青椒肉片", price: 20, desc: "下饭", img: "https://i.ibb.co/s9Hj1B3L/qjrp.png" },
             { id: 425, category: "炒菜", name: "水芹干丝", price: 22, desc: "清爽", img: "https://i.ibb.co/XxkGWWss/sqgs.png" },
-           // { id: 426, category: "炒菜", name: "韭菜干丝", price: 20, desc: "家常", img: "https://i.ibb.co/Q7svShjG/jypt.jpg" },
             { id: 427, category: "炒菜", name: "韭黄肉丝", price: 22, desc: "鲜嫩", img: "https://i.ibb.co/PsHRRNcP/jhrs.png" },
             { id: 428, category: "炒菜", name: "韭黄炒蛋", price: 20, desc: "滑嫩", img: "https://i.ibb.co/HDmjHmmr/jhcd.jpg" },
             { id: 429, category: "炒菜", name: "咸菜毛豆肉丝", price: 22, desc: "佐粥神器", img: "https://i.ibb.co/sdj5KvmP/xcmdrs.png" },
             { id: 430, category: "炒菜", name: "茭白肉丝", price: 22, desc: "时令", img: "https://i.ibb.co/TMZFhGKc/jbrs.jpg" },
             { id: 431, category: "炒菜", name: "蒜苗肉丝", price: 22, desc: "香", img: "https://i.ibb.co/PvWLfSrT/smrs.png" },
-           //{ id: 432, category: "炒菜", name: "韭菜炒蛋", price: 18, desc: "经典", img: "https://i.ibb.co/Q7svShjG/jypt.jpg" },
             { id: 433, category: "炒菜", name: "麻婆豆腐", price: 18, desc: "麻辣鲜香", img: "https://i.ibb.co/3ynTxWg6/mpdf.webp" },
             { id: 434, category: "炒菜", name: "酸辣土豆丝", price: 16, desc: "开胃", img: "https://i.ibb.co/WvdgWL5M/sltds.png" },
             { id: 435, category: "炒菜", name: "番茄炒蛋", price: 15, desc: "国民菜", img: "https://i.ibb.co/twnc7Z0M/fqcd.png" },
-            // --- 蔬食 ---
-           // { id: 501, category: "蔬食", name: "丝瓜毛豆", price: 25, desc: "清甜", img: "https://i.ibb.co/3YGnjYBM/sgmd.png" },
-            //{ id: 502, category: "蔬食", name: "丝瓜炒蛋", price: 25, desc: "滑嫩", img: "https://i.ibb.co/LddKvs4J/sgcd.webp" },
-            //{ id: 503, category: "蔬食", name: "丝瓜面筋", price: 25, desc: "吸汁", img: "https://i.ibb.co/qYMNmdp1/sgmj.png" },
             { id: 504, category: "蔬食", name: "酒香草头", price: 25, desc: "清香", img: "https://i.ibb.co/B5hWsyYq/jxct.png" },
-            //{ id: 505, category: "蔬食", name: "苋菜", price: 20, desc: "鲜嫩", img: "https://i.ibb.co/QFsKSdfM/xc.png" },
-            //{ id: 506, category: "蔬食", name: "子角叶", price: 20, desc: "时蔬", img: "https://i.ibb.co/R4SrMMk1/zjy.png" },
-            //{ id: 507, category: "蔬食", name: "油麦菜", price: 20, desc: "清脆", img: "https://i.ibb.co/5WxDbc0N/ymc.png" },
-            //{ id: 508, category: "蔬食", name: "刀豆土豆", price: 20, desc: "绵软", img: "https://i.ibb.co/LdgGLD6q/ddtd.webp" },
             { id: 509, category: "蔬食", name: "油焖茄子", price: 20, desc: "软烂入味", img: "https://i.ibb.co/rfw1J6CQ/ymqz.webp" },
             { id: 510, category: "蔬食", name: "空心菜", price: 18, desc: "清炒", img: "https://i.ibb.co/BVhZ6hY0/kxc.png" },
             { id: 511, category: "蔬食", name: "韭菜", price: 18, desc: "鲜", img: "https://i.ibb.co/x88LNnTx/jc.png" },
@@ -528,7 +498,6 @@
             { id: 514, category: "蔬食", name: "葱油蚕豆", price: 30, desc: "春味", img: "https://i.ibb.co/Kj1FTXCZ/cycd.webp" },
             { id: 515, category: "蔬食", name: "咸菜豆瓣", price: 30, desc: "鲜香", img: "https://i.ibb.co/rKvfbCzz/xcdb.webp" },
             { id: 516, category: "蔬食", name: "豆瓣炒蛋", price: 30, desc: "鲜嫩", img: "https://i.ibb.co/HppJ3J1n/dbcd.webp" },
-            // --- 汤类 ---
             { id: 601, category: "汤类", name: "老鸭汤", price: 188, desc: "滋阴补肺", img: "https://i.ibb.co/Q3f70M7J/lyt.png" },
             { id: 602, category: "汤类", name: "老母鸡汤", price: 158, desc: "元气满满", img: "https://i.ibb.co/qF0bHWtH/lmjt.png" },
             { id: 603, category: "汤类", name: "排骨汤", price: 48, desc: "清润", img: "https://i.ibb.co/kVsXXZRF/pgt.png" },
@@ -538,13 +507,11 @@
             { id: 607, category: "汤类", name: "榨菜肉丝汤", price: 18, desc: "开胃", img: "https://i.ibb.co/v4R8KPPP/zcrst.png" },
             { id: 608, category: "汤类", name: "番茄蛋汤", price: 15, desc: "酸甜", img: "https://i.ibb.co/qLySxhnz/fqdt.png" },
             { id: 609, category: "汤类", name: "紫菜蛋汤", price: 15, desc: "鲜美", img: "https://i.ibb.co/3Y9x1977/zcdt.webp" },
-            // --- 点心 ---
             { id: 701, category: "点心", name: "荠菜猪肉水饺", price: 30, desc: "手工现包", img: "https://i.ibb.co/Ng06bWSQ/jczrsj.webp" },
             { id: 702, category: "点心", name: "荠菜猪肉馄饨", price: 30, desc: "皮薄馅大", img: "https://i.ibb.co/BK7cMvsK/jczrht.png" },
             { id: 703, category: "点心", name: "红汤面", price: 20, desc: "苏式风味", img: "https://i.ibb.co/qLwvV3s4/htm.png" },
             { id: 704, category: "点心", name: "红糖发糕", price: 20, desc: "松软香甜", img: "https://i.ibb.co/r2MkxXYS/htfg.png" },
             { id: 705, category: "点心", name: "野菜踏饼", price: 10, desc: "4只", img: "https://i.ibb.co/BK27DRrz/yctb.png" },
-            // --- 酒水 ---
             { id: 801, category: "酒水", name: "椰奶(大)", price: 18, desc: "饮料 大瓶", img: "https://i.ibb.co/7dQk7cc5/yndp.webp" },
             { id: 802, category: "酒水", name: "橙汁", price: 12, desc: "饮料 大瓶", img: "https://i.ibb.co/F4NPvGvF/glc.webp" },
             { id: 8021, category: "酒水", name: "葡萄汁", price: 18, desc: "饮料 大瓶", img: "https://i.ibb.co/gLBTTGJQ/pyz.png" },
@@ -552,7 +519,7 @@
             { id: 8023, category: "酒水", name: "nfc椰汁", price: 18, desc: "饮料 大瓶", img: "https://i.ibb.co/9k6JCdLS/nfcyz.png" },
             { id: 803, category: "酒水", name: "百事可乐(大)", price: 10, desc: "饮料 大瓶", img: "https://i.ibb.co/qLtbT8Mw/bskldp.png" },
             { id: 8033, category: "酒水", name: "可口可乐(大)", price: 10, desc: "饮料 大瓶", img: "https://i.ibb.co/DHkzt6DG/kkkldp.png" },
-            { id: 804, category: "酒水", name: "雪碧(大)", price: 10, desc: "饮料 大瓶", img: "https://i.ibb.co/fg6xGQR/xbdp.png" },,
+            { id: 804, category: "酒水", name: "雪碧(大)", price: 10, desc: "饮料 大瓶", img: "https://i.ibb.co/fg6xGQR/xbdp.png" },
             { id: 805, category: "酒水", name: "粗粮王", price: 16, desc: "饮料 小罐", img: "https://i.ibb.co/bMPtWnjY/clw.png" },
             { id: 806, category: "酒水", name: "椰奶(小)", price: 8, desc: "饮料 小罐", img: "https://i.ibb.co/d4VSv0pw/ynx.png" },
             { id: 807, category: "酒水", name: "王老吉", price: 6, desc: "饮料 小罐", img: "https://i.ibb.co/WW68FSbL/wlj.png" },
@@ -564,7 +531,6 @@
             { id: 903, category: "酒水", name: "百年迎驾", price: 70, desc: "白酒", img: "https://i.ibb.co/WNV2Yy8r/bnyj.png" },
             { id: 904, category: "酒水", name: "金种子(大)", price: 68, desc: "白酒 大瓶", img: "https://i.ibb.co/Rp4nBbZC/jzz.png" },
             { id: 905, category: "酒水", name: "牛栏山(大)", price: 38, desc: "白酒 大瓶", img: "https://i.ibb.co/sJb0HDg0/nlsd.png" },
-            //{ id: 906, category: "酒水", name: "金种子(小)", price: 25, desc: "白酒 小瓶", img: "https://i.ibb.co/BK27DRrz/yctb.png" },
             { id: 907, category: "酒水", name: "牛栏山(小)", price: 20, desc: "白酒 小瓶", img: "https://i.ibb.co/t0yXCZm/nlsx.png" },
             { id: 908, category: "酒水", name: "沙洲优黄-1878", price: 28, desc: "黄酒", img: "https://i.ibb.co/RT4ywhGQ/szyh1878.png" },
             { id: 909, category: "酒水", name: "沙洲优黄-坛装", price: 25, desc: "黄酒", img: "https://i.ibb.co/5g6pQkZP/szyhtz.png" },
@@ -576,13 +542,6 @@
         ];
 
         let cart = [];
-
-        // 初始化图片：如果菜品没设图片，使用分类默认图
-        menuData.forEach(item => {
-            if (!item.img || item.img.trim() === "") {
-                item.img = categoryDefaults[item.category] || "";
-            }
-        });
 
         function formatPrice(price) { return price === 0 ? "时价" : `¥${price}`; }
 
@@ -702,16 +661,29 @@
             if (noteInput.trim()) { noteContainer.classList.remove('hidden'); noteDisplay.innerText = noteInput; } else { noteContainer.classList.add('hidden'); }
         }
 
-        // ==========================================
-        // 修改点：保存订单为图片
-        // ==========================================
+        /* 核心改动：集成保存与打印功能 */
+        function handleSaveAction() {
+            const isThermalPrinter = confirm("想要导出PDF/打印大字订单吗？\n(取消则保存为普通订单图片)");
+            if (isThermalPrinter) {
+                saveAsPDF();
+            } else {
+                saveOrderImage();
+            }
+        }
+
+        function saveAsPDF() {
+            // 直接调用浏览器打印功能，用户可选择“另存为PDF”
+            // 样式已通过 @media print 针对热敏纸和超大字体优化
+            window.print();
+        }
+
         function saveOrderImage() {
             const receipt = document.getElementById('receipt-card');
-            showToast("正在生成高清订单图片...");
+            showToast("正在生成订单图片...");
             
             html2canvas(receipt, {
                 backgroundColor: "#fdfbf7",
-                scale: 3, // 高清倍率
+                scale: 3,
                 useCORS: true,
                 logging: false
             }).then(canvas => {
@@ -720,9 +692,8 @@
                 link.download = `稻田边订单-${timestamp}.png`;
                 link.href = canvas.toDataURL("image/png");
                 link.click();
-                showToast("保存成功");
+                showToast("图片保存成功");
             }).catch(err => {
-                console.error(err);
                 showToast("生成失败，请尝试手动截图");
             });
         }
@@ -733,38 +704,26 @@
             const total = document.getElementById('receipt-total').innerText;
             const now = new Date().toLocaleString('zh-CN', { hour12: false });
 
-            let text = `【稻田边·私宴订单】\n`;
-            text += `📅 时间: ${now}\n`;
-            text += `📍 桌号/称呼: ${table}\n`;
-            text += `------------------\n`;
+            let text = `【稻田边·私宴订单】\n📅 时间: ${now}\n📍 桌号/称呼: ${table}\n------------------\n`;
             cart.forEach(item => {
                 const price = item.price === 0 ? "时价" : item.price * item.quantity;
                 text += `▫️ ${item.name} x${item.quantity}  ${price}\n`;
             });
-            text += `------------------\n`;
-            text += `💰 总计: ${total}\n`;
-            text += `📝 备注: ${note}`;
+            text += `------------------\n💰 总计: ${total}\n📝 备注: ${note}`;
 
             const textArea = document.createElement("textarea");
             textArea.value = text;
             textArea.style.position = "fixed";
             textArea.style.left = "-9999px";
-            textArea.style.top = "0";
             document.body.appendChild(textArea);
-            textArea.focus();
             textArea.select();
 
             try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showToast("文本已复制，可发微信");
-                } else {
-                    showToast("复制失败，请手动截图");
-                }
+                if (document.execCommand('copy')) showToast("文本已复制，可发微信");
+                else showToast("复制失败，请手动截图");
             } catch (err) {
-                showToast("复制异常，请手动截图");
+                showToast("复制异常");
             }
-
             document.body.removeChild(textArea);
         }
 
