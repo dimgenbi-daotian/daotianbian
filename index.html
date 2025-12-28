@@ -83,7 +83,7 @@
         .receipt-line { border-bottom: 1px dashed #a8a29e; }
 
         /* =========================================
-           2寸小票机专用打印样式 (58mm) - 已根据需求修改
+           2寸小票机专用打印样式 (58mm)
         ========================================= */
         @media print {
             @page {
@@ -97,12 +97,10 @@
                 padding: 0;
                 height: auto;
             }
-            /* 隐藏页面上所有非打印元素 */
             body * {
                 visibility: hidden;
                 height: 0;
             }
-            /* 仅显示模态框中的小票卡片 */
             #order-modal, #order-modal *, #receipt-card, #receipt-card * {
                 visibility: visible;
                 height: auto;
@@ -114,11 +112,9 @@
                 width: 100%;
                 background: white !important;
             }
-            /* 隐藏左侧输入表单 */
             #order-modal-content > div:first-child { 
                 display: none !important; 
             }
-            /* 强制全屏显示小票 */
             #order-modal-content {
                 position: absolute;
                 left: 0;
@@ -128,9 +124,8 @@
                 padding: 0;
                 transform: none !important;
             }
-            
             #receipt-card {
-                width: 58mm !important; /* 2寸纸张标准宽度 */
+                width: 58mm !important;
                 max-width: 58mm !important;
                 margin: 0 auto !important;
                 padding: 10px 5px !important;
@@ -140,17 +135,9 @@
                 border: none !important;
                 color: black !important;
             }
-
-            /* 隐藏装饰性元素 */
-            #receipt-card .w-12, 
-            .opacity-20, 
-            .receipt-line, 
-            .text-zinc-600,
-            .text-zinc-500 {
+            #receipt-card .w-12, .opacity-20, .receipt-line, .text-zinc-600, .text-zinc-500 {
                 display: none !important;
             }
-            
-            /* 标题超大字 */
             #receipt-card h2 {
                 font-size: 32pt !important;
                 font-weight: bold !important;
@@ -158,8 +145,6 @@
                 text-align: center;
                 line-height: 1;
             }
-
-            /* 信息栏文字加大 */
             .font-mono {
                 font-size: 14pt !important;
                 font-weight: bold !important;
@@ -169,16 +154,12 @@
                 padding-bottom: 5px;
                 color: black !important;
             }
-            
-            /* 菜品列表布局重组为“大字模式” */
             #receipt-items-list .flex {
-                display: block !important; /* 强制纵向排列防止横向挤压 */
+                display: block !important;
                 margin-bottom: 15px !important;
                 border-bottom: 1px solid #000;
                 padding-bottom: 8px;
             }
-
-            /* 菜名超大 */
             #receipt-items-list .flex-grow {
                 font-size: 24pt !important;
                 font-weight: 900 !important;
@@ -188,8 +169,6 @@
                 margin-bottom: 5px !important;
                 color: black !important;
             }
-
-            /* 数量和价格 */
             #receipt-items-list span:first-child {
                 font-size: 18pt !important;
                 font-weight: bold !important;
@@ -199,15 +178,12 @@
                 content: "份数: ";
                 font-size: 14pt;
             }
-
             #receipt-items-list span:last-child {
                 float: right;
                 font-size: 18pt !important;
                 font-weight: bold !important;
                 color: black !important;
             }
-
-            /* 总额栏优化 */
             .flex.justify-between.items-baseline.mb-6 {
                 margin-top: 20px !important;
                 border-top: 4px solid black !important;
@@ -224,8 +200,6 @@
                 display: block !important;
                 text-align: right;
             }
-
-            /* 备注栏优化 */
             #receipt-note-container {
                 display: block !important;
                 margin-top: 20px !important;
@@ -239,7 +213,6 @@
                 color: black !important;
                 border: none !important;
             }
-            
             .no-print { display: none !important; }
         }
     </style>
@@ -352,6 +325,12 @@
                     <button onclick="handleSaveAction()" class="w-full btn-gold text-white py-4 font-bold tracking-widest uppercase rounded shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                         保存为图片 / PDF打印
+                    </button>
+
+                    <!-- 新增得力e+专用打印跳转按钮 -->
+                    <button onclick="printWithDeli()" class="w-full bg-blue-600 text-white py-3 font-bold tracking-widest uppercase rounded hover:bg-blue-500 transition-all flex items-center justify-center gap-2 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        得力e+ 专用打印
                     </button>
                     
                     <button onclick="copyOrderText()" class="w-full bg-zinc-800 text-zinc-300 py-3 font-bold tracking-widest uppercase rounded hover:bg-zinc-700 transition-all flex items-center justify-center gap-2">
@@ -661,41 +640,76 @@
             if (noteInput.trim()) { noteContainer.classList.remove('hidden'); noteDisplay.innerText = noteInput; } else { noteContainer.classList.add('hidden'); }
         }
 
-        /* 核心改动：集成保存与打印功能 */
         function handleSaveAction() {
             const isThermalPrinter = confirm("想要导出PDF/打印大字订单吗？\n(取消则保存为普通订单图片)");
-            if (isThermalPrinter) {
-                saveAsPDF();
-            } else {
-                saveOrderImage();
-            }
-        }
-
-        function saveAsPDF() {
-            // 直接调用浏览器打印功能，用户可选择“另存为PDF”
-            // 样式已通过 @media print 针对热敏纸和超大字体优化
-            window.print();
+            if (isThermalPrinter) window.print();
+            else saveOrderImage();
         }
 
         function saveOrderImage() {
             const receipt = document.getElementById('receipt-card');
             showToast("正在生成订单图片...");
-            
-            html2canvas(receipt, {
-                backgroundColor: "#fdfbf7",
-                scale: 3,
-                useCORS: true,
-                logging: false
-            }).then(canvas => {
+            html2canvas(receipt, { backgroundColor: "#fdfbf7", scale: 3, useCORS: true }).then(canvas => {
                 const link = document.createElement('a');
-                const timestamp = new Date().getTime();
-                link.download = `稻田边订单-${timestamp}.png`;
+                link.download = `稻田边订单-${new Date().getTime()}.png`;
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 showToast("图片保存成功");
-            }).catch(err => {
-                showToast("生成失败，请尝试手动截图");
             });
+        }
+
+        // --- 新增：得力e+ 打印跳转逻辑 ---
+        function printWithDeli() {
+            const table = document.getElementById('input-table').value || "未填写";
+            const note = document.getElementById('input-note').value || "无";
+            const total = document.getElementById('receipt-total').innerText;
+            const now = new Date().toLocaleString('zh-CN', { hour12: false });
+
+            // 1. 构建适合 58mm 打印的纯文本订单
+            let text = `   稻田边·私宴\n`;
+            text += `----------------\n`;
+            text += `日期: ${now.split(' ')[0]}\n`;
+            text += `桌号: ${table}\n`;
+            text += `----------------\n`;
+            cart.forEach(item => {
+                const price = item.price === 0 ? "时价" : item.price * item.quantity;
+                text += `${item.name}\n`;
+                text += ` x${item.quantity}       ${price}\n`;
+            });
+            text += `----------------\n`;
+            text += `总额: ${total}\n`;
+            if(note !== "无") text += `备注: ${note}\n`;
+            text += `\n   谢谢惠顾\n\n\n`;
+
+            // 2. 自动复制到剪贴板
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast("已复制订单，正在跳转...");
+                
+                // 3. 延迟一秒跳转，确保复制完成
+                setTimeout(() => {
+                    // 尝试通过 URL Scheme 调起得力e+ 应用
+                    // 注意：得力e+ 官方协议目前不公开文本直传，此处调起应用后用户在软件内粘贴打印即可
+                    window.location.href = "delieplus://"; 
+                    
+                    // 如果是 PC 端且没有协议响应，提供备选方案
+                    setTimeout(() => {
+                        if (confirm("如果软件未自动打开，请点击确定手动复制文本并打开得力e+打印。")) {
+                            copyOrderText(); // 再次执行通用复制
+                        }
+                    }, 2000);
+                }, 1000);
+            } catch (err) {
+                showToast("操作失败，请尝试手动复制");
+            }
+            document.body.removeChild(textArea);
         }
 
         function copyOrderText() {
@@ -703,27 +717,19 @@
             const note = document.getElementById('input-note').value || "无";
             const total = document.getElementById('receipt-total').innerText;
             const now = new Date().toLocaleString('zh-CN', { hour12: false });
-
             let text = `【稻田边·私宴订单】\n📅 时间: ${now}\n📍 桌号/称呼: ${table}\n------------------\n`;
             cart.forEach(item => {
                 const price = item.price === 0 ? "时价" : item.price * item.quantity;
                 text += `▫️ ${item.name} x${item.quantity}  ${price}\n`;
             });
             text += `------------------\n💰 总计: ${total}\n📝 备注: ${note}`;
-
             const textArea = document.createElement("textarea");
             textArea.value = text;
             textArea.style.position = "fixed";
             textArea.style.left = "-9999px";
             document.body.appendChild(textArea);
             textArea.select();
-
-            try {
-                if (document.execCommand('copy')) showToast("文本已复制，可发微信");
-                else showToast("复制失败，请手动截图");
-            } catch (err) {
-                showToast("复制异常");
-            }
+            if (document.execCommand('copy')) showToast("文本已复制");
             document.body.removeChild(textArea);
         }
 
